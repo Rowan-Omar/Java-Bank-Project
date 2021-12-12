@@ -153,4 +153,9 @@ public class BankAccount {
                 + "\tCustomer ID: " + custID + "\tBalance: " + acctBalance + " " + getCurrency() + "\tAlternate Account No.: " + alternateAcct);
     }
 
+    //waiting for the transaction class to be implemented
+    public void getTransactions(){
+
+    }
+
 }
