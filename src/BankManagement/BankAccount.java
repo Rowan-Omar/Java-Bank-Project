@@ -1,6 +1,8 @@
 package BankManagement;
 
 import java.util.Date;
+import java.util.Scanner;
+
 
 public class BankAccount {
     private int acctID;
@@ -12,15 +14,19 @@ public class BankAccount {
     private int alternateAcct; //momken a7oto m3 el acct details
     private String acctCurrency;
     private String acctDetails;
-    private int acctTypeCode;
+    private int acctType; //whether it is saving account or checking account
+
+    Scanner input = new Scanner(System.in);
 
     //Constructor for adding account
-    public BankAccount(int accountID, String accountName, Date dateOpened, String accountDetails, int accountTypeCode, int customerID, int accountNumber) {
+    public BankAccount(){}
+
+    public BankAccount(int accountID, String accountName, Date dateOpened, String accountDetails, int accountType, int customerID, int accountNumber) {
         acctID = accountID;
         acctName = accountName;
         this.dateOpened = dateOpened;
         acctDetails = accountDetails;
-        acctTypeCode = accountTypeCode;
+        acctType = accountType;
         custID = customerID;
         acctNo = accountNumber;
     }
@@ -46,8 +52,8 @@ public class BankAccount {
         return acctDetails;
     }
 
-    public int getAcctTypeCode() {
-        return acctTypeCode;
+    public int getAcctType() {
+        return acctType;
     }
 
     public int getCustID() {
@@ -71,11 +77,12 @@ public class BankAccount {
             case "EUR":
                 return "euro";
             default:
-                return  acctCurrency;
+                return acctCurrency;
         }
     }
 
     //-------setters------------
+    //will be called from the menu along with the pin number
     public void setAcctID(int accountID) {
         acctID = accountID;
     }
@@ -96,8 +103,8 @@ public class BankAccount {
         acctDetails = accountDetails;
     }
 
-    public void setAcctTypeCode(int accountTypeCode) {
-        acctTypeCode = accountTypeCode;
+    public void setAcctType(int accountType) {
+        acctType = accountType;
     }
 
     public void setCustID(int customerID) {
@@ -112,6 +119,36 @@ public class BankAccount {
             return false;
         acctCurrency = currency;
         return true;
+    }
+
+    public void calcBalanceWithdraw(float amount) { // when the user withdraw some amount // we could then return the new balance
+        acctBalance -= amount;
+    }
+
+    public void calcBalanceDeposite(float amount) {
+        acctBalance += amount;
+    }
+
+    public void getWithdrawInput() { //getting the amount to be withdrawn from the user
+        System.out.println("Enter the amount to withdraw from your account: ");
+        float amount = input.nextFloat();
+        if ((acctBalance - amount) >= 0) {
+            calcBalanceWithdraw(amount);
+            System.out.println("New account balance: " + getBalance());
+        } else {
+            System.out.println("Sorry, you do not have this amount in your account balance");
+        }
+    }
+
+    public void getDepositeInput() { //getting the amount to be deposited from the user
+        System.out.println("Enter the amount to withdraw from your account: ");
+        float amount = input.nextFloat();
+        if (amount > 0) {
+            calcBalanceDeposite(amount);
+            System.out.println("New account balance: " + getBalance());
+        } else {
+            System.out.println("Sorry, the deposited amount cannot be negative or zero");
+        }
     }
 
     public void setAlternateAcct(int accountNo) {
@@ -154,7 +191,7 @@ public class BankAccount {
     }
 
     //waiting for the transaction class to be implemented
-    public void getTransactions(){
+    public void getTransactions() {
 
     }
 

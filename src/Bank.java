@@ -10,7 +10,7 @@ public class Bank {
     }
     public static void main(String[] args){
 
-        // creating Bank window with 2 bittons (login - register).
+        // creating Bank window with 2 buttons (login - register).
         JFrame BankName = new JFrame("Bank Application");
         BankName.setSize(700,500);
         BankName.setVisible(true);
