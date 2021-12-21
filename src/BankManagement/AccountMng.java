@@ -7,21 +7,41 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 
+
 public class AccountMng implements ActionListener {
     JFrame f;
     JTextField tId, tNum, tType, deleteId = new JTextField();
-    JButton bAdd, bRemove, bDisplay;
+    JButton bAdd, bRemove, bDisplay,bcheck;
 
     BankAccount account = new BankAccount();
     LinkedList<BankAccount> bank = new LinkedList<>();
 
     AccountMng() {
+        try{
+
+            BufferedWriter accountCSVWriter = new BufferedWriter(new FileWriter("src/BankManagement/accounts.csv"));
+            accountCSVWriter.append("Account id");
+            accountCSVWriter.append(','); //to add new column
+            accountCSVWriter.append("Account Number");
+            accountCSVWriter.append(',');
+            accountCSVWriter.append("Account Type");
+            accountCSVWriter.append('\n'); //to add new row
+            accountCSVWriter.flush();
+            accountCSVWriter.close();
+
+             }
+        catch(Exception e){
+            System.out.println("error");
+        }
+
+
         f = new JFrame("Accounts");
         f.setBackground(Color.white);
         f.setLayout(null);
@@ -74,15 +94,24 @@ public class AccountMng implements ActionListener {
         bDisplay = new JButton("Display content in console");
         bDisplay.setBackground(Color.BLACK);
         bDisplay.setForeground(Color.WHITE);
-        bDisplay.setBounds(250, 500, 200, 40);
+        bDisplay.setBounds(250, 500, 150, 40);
 
         bDisplay.addActionListener(this);
         f.add(bDisplay);
+
+        bcheck=new JButton("Check");
+        bcheck.addActionListener(this);
+        bcheck.setBackground(Color.BLACK);
+        bcheck.setForeground(Color.WHITE);
+        bcheck.setBounds(400, 500, 150, 40);
+
+        f.add(bcheck);
 
         f.setLayout(null);
         f.setSize(900, 600);
         f.setLocation(400, 100);
         f.setVisible(true);
+
 
     }
 
@@ -93,37 +122,31 @@ public class AccountMng implements ActionListener {
             List<String> newRows = new ArrayList<String>();
 
             try {
-                accountCSVWriter = new BufferedWriter(new FileWriter("src/BankManagement/accounts.csv"));
+                accountCSVWriter = new BufferedWriter(new FileWriter("src/BankManagement/accounts.csv",true));
 
                 newRows.add(0, tId.getText());
                 newRows.add(1, tNum.getText());
                 newRows.add(2, tType.getText());
 
 
-                accountCSVWriter.write("Account id");
-                accountCSVWriter.append(','); //to add new column
-                accountCSVWriter.write("Account Number");
+                /*accountCSVWriter.append("1");
                 accountCSVWriter.append(',');
-                accountCSVWriter.write("Account Type");
-                accountCSVWriter.append('\n'); //to add new row
-                accountCSVWriter.write("1");
+                accountCSVWriter.append("11111");
                 accountCSVWriter.append(',');
-                accountCSVWriter.write("11111");
-                accountCSVWriter.append(',');
-                accountCSVWriter.write("Saving");
+                accountCSVWriter.append("Saving");
                 accountCSVWriter.append('\n');
-                accountCSVWriter.write("2");
+                accountCSVWriter.append("2");
                 accountCSVWriter.append(',');
-                accountCSVWriter.write("22222");
+                accountCSVWriter.append("22222");
                 accountCSVWriter.append(',');
-                accountCSVWriter.write("Checking");
-                accountCSVWriter.append('\n');
+                accountCSVWriter.append("Checking");
+                accountCSVWriter.append('\n');*/
                 if (newRows.get(0) != null) {
                     accountCSVWriter.write(newRows.get(0));
                     accountCSVWriter.append(',');
-                    accountCSVWriter.write(newRows.get(1));
+                    accountCSVWriter.append(newRows.get(1));
                     accountCSVWriter.append(',');
-                    accountCSVWriter.write(newRows.get(2));
+                    accountCSVWriter.append(newRows.get(2));
                     accountCSVWriter.append('\n');
                 }
 
@@ -189,7 +212,29 @@ public class AccountMng implements ActionListener {
 
             } else if (bank instanceof LinkedList) {
                 JOptionPane.showMessageDialog(null, "Sorry, you are not authenticated to remove accounts");
-            } else {
+            }
+            else if(ae.getSource()==bcheck){
+                String row;
+                String[] accountInfo = null;
+                try {
+                    BufferedReader accountCSVReader = new BufferedReader(new FileReader("src/BankManagement/accounts.csv"));
+                    while((row=accountCSVReader.readLine())!=null){
+                        for(int col=0;col<accountInfo.length;col++) {
+                            String m = JOptionPane.showInputDialog(null, "enter the id of the account yo wanna display", "checking");
+                            if(m==accountInfo[0])
+                                System.out.println("id:"+accountInfo[0]+"\n"+"Number:"+accountInfo[1]+"\n"+"Type:"+accountInfo[2]+"\n");
+
+                        }
+                    }
+
+                }
+                catch(Exception e){
+                    System.out.println("there's error in reading");
+                }
+
+            }
+            else
+             {
                 JOptionPane.showMessageDialog(null, "Not instance");
             }
         }
@@ -199,9 +244,11 @@ public class AccountMng implements ActionListener {
     public static void main(String[] args) throws Exception {
 
 
+
         new AccountMng();
 
 
     }
-
 }
+
+
