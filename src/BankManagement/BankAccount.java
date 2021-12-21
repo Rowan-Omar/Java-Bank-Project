@@ -1,12 +1,13 @@
 package BankManagement;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.Scanner;
 
 
 public class BankAccount {
-    private int acctID;
-    private int custID;
+    private String acctId;
+    private int custId;
     private String acctName;
     private int acctNo;
     private Date dateOpened;
@@ -14,26 +15,28 @@ public class BankAccount {
     private int alternateAcct; //momken a7oto m3 el acct details
     private String acctCurrency;
     private String acctDetails;
-    private int acctType; //whether it is saving account or checking account
+    private String acctType; //whether it is saving account or checking account
 
     Scanner input = new Scanner(System.in);
 
     //Constructor for adding account
-    public BankAccount(){}
+    public BankAccount() {
+    }
 
-    public BankAccount(int accountID, String accountName, Date dateOpened, String accountDetails, int accountType, int customerID, int accountNumber) {
-        acctID = accountID;
+    // public BankAccount(int accountId, String accountName, Date dateOpened, String accountDetails, int accountType, int customerId, int accountNumber) {
+    public BankAccount(String accountId, String accountName, Date dateOpened, String accountType) {
+        acctId = accountId;
         acctName = accountName;
         this.dateOpened = dateOpened;
-        acctDetails = accountDetails;
+        //acctDetails = accountDetails;
         acctType = accountType;
-        custID = customerID;
-        acctNo = accountNumber;
+        // custId = customerId;
+        // acctNo = accountNumber;
     }
 
     // ---------- Getters ------------
-    public int getAcctID() {
-        return acctID;
+    public String getAcctId() {
+        return acctId;
     }
 
     public String getAcctName() {
@@ -52,12 +55,12 @@ public class BankAccount {
         return acctDetails;
     }
 
-    public int getAcctType() {
+    public String getAcctType() {
         return acctType;
     }
 
-    public int getCustID() {
-        return custID;
+    public int getcustId() {
+        return custId;
     }
 
     public int getAlternateAcct() {
@@ -83,8 +86,8 @@ public class BankAccount {
 
     //-------setters------------
     //will be called from the menu along with the pin number
-    public void setAcctID(int accountID) {
-        acctID = accountID;
+    public void setAcctId(String accountId) {
+        acctId = accountId;
     }
 
     public void setAcctName(String accountName) {
@@ -103,12 +106,12 @@ public class BankAccount {
         acctDetails = accountDetails;
     }
 
-    public void setAcctType(int accountType) {
+    public void setAcctType(String accountType) {
         acctType = accountType;
     }
 
-    public void setCustID(int customerID) {
-        custID = customerID;
+    public void setCustId(int customerId) {
+        custId = customerId;
     }
 
     public boolean setBalance(float balance, String currency) {
@@ -157,37 +160,37 @@ public class BankAccount {
 
 
     //Methods
-    public boolean editAccount(int accountID, int accountNo, String accountDetails, int customerID) {
-        if (accountID != acctID && accountNo != acctNo)
+    public boolean editAccount(String accountId, int accountNo, String accountDetails, int customerId) {
+        if (accountId != acctId && accountNo != acctNo)
             return false; //this account does not exist
         acctDetails = accountDetails;
-        custID = customerID;
+        custId = customerId;
         return true; //update is done
     }
 
     /*this can be implemented well in the admin class so to make the object created from this class to refer to null
      instead of referring to an object*/
-    public boolean deleteAccount(int accountID, int accountNo) {
-        return (accountID == acctID && accountNo == acctNo);
+    public boolean deleteAccount(String accountId, int accountNo) {
+        return (accountId == acctId && accountNo == acctNo);
     }
 
     //Need to be updated
-    public static BankAccount findAccount(int accountID) {
+    public static BankAccount findAccount(String accountId) {
         for (int i = 0; i < 5; i++) {
             //code here for searching in a specific file or array or any storage source then return that one with the satisified condition
-            //if(accountID == acctID){            }
+            //if(accountId == acctId){            }
         }
         return null;
     }
 
-    public String displayAcctDetails(int accountID) {
-        if (accountID != acctID)
+    public String displayAcctDetails(String accountId) {
+        if (!Objects.equals(accountId, acctId))
             return "This account does not exist";
-        if (custID == 0 || acctName == null || acctNo == 0 || dateOpened == null || acctBalance == 0 || alternateAcct == 0 || acctCurrency == null)
+        if (custId == 0 || acctName == null || acctNo == 0 || dateOpened == null || acctBalance == 0 || alternateAcct == 0 || acctCurrency == null)
             return "Cannot display the details of this account";
         //could enhance this by searching for the customer id for this account to get its name from the customer class
         return ("Account Name: " + acctName + "\tAccount No.: " + acctNo + "\tDate Opened : " + dateOpened + "\n"
-                + "\tCustomer ID: " + custID + "\tBalance: " + acctBalance + " " + getCurrency() + "\tAlternate Account No.: " + alternateAcct);
+                + "\tCustomer ID: " + custId + "\tBalance: " + acctBalance + " " + getCurrency() + "\tAlternate Account No.: " + alternateAcct);
     }
 
     //waiting for the transaction class to be implemented
