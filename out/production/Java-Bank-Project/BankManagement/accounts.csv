@@ -1,7 +1,7 @@
-Account Id,Account Number,Account Type
-1,1111,Checking
-2,2222,isdlkvjdx
-3,3333,kcsld
-5,5555,None
-6,6666,None
-7,7777,Saving
+Account Id,Account Number,Account Type,balanced 
+1,1111,Checking,30000
+2,2222,isdlkvjdx,5000
+3,3333,kcsld,70000
+5,5555,None,45000
+6,6666,None,89000
+7,7777,Saving,34500

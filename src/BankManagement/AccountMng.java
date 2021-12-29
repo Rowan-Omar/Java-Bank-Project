@@ -12,7 +12,8 @@ import java.util.LinkedList;
 import java.util.Objects;
 
 
-public class AccountMng implements ActionListener {
+public class AccountMng extends Bank implements ActionListener {
+
     JFrame f;
     JTextField tId, tNum, tType, deleteId, editId;
     JButton bAdd, bRemove, bDisplay, bDone, bEdit;
@@ -20,10 +21,11 @@ public class AccountMng implements ActionListener {
     BufferedWriter accountCSVWriter;
     ArrayList<BankAccount> arrayFile;
 
-    BankAccount account = new BankAccount();
+    static BankAccount account = new BankAccount();
     LinkedList<BankAccount> bank = new LinkedList<>();
+    public AccountMng(){
+        System.out.println(super.id);
 
-    AccountMng() {
         int numRow = -1;
         try {
             accountCSVReader = new BufferedReader(new FileReader("src/BankManagement/accounts.csv"));
@@ -53,6 +55,7 @@ public class AccountMng implements ActionListener {
 
                 BankAccount newAccount; // ??????????????????????????? there is a question below
                 newAccount = new BankAccount(accountInfo[0], accountInfo[1], null, accountInfo[2]); // HOW to enhance this to be generic  col not by specifying the index of the array statically
+                newAccount.setBalance( new Double(accountInfo[3]));
                 arrayFile.add(newAccount);
                 // System.out.println(arrayFile);
             }
@@ -60,6 +63,16 @@ public class AccountMng implements ActionListener {
         } catch (Exception ex) {
             System.out.println("There is error in reading in the array: " + ex);
         }
+        for(int i=0;i<arrayFile.size();i++){
+            if(Objects.equals(arrayFile.get(i).getAcctId(), super.id)){
+                System.out.print(arrayFile.get(i).getAcctName());
+            }
+        }
+       // new Transaction();
+    }
+
+    public AccountMng(int x) {
+
 
         f = new JFrame("Accounts");
         f.setBackground(Color.white);
@@ -297,8 +310,9 @@ public class AccountMng implements ActionListener {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    /*public static void main(String[] args){
         new AccountMng();
+        System.out.println(super.id);*/
     }
 
-}
+

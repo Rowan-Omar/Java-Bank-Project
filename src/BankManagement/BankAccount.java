@@ -11,7 +11,7 @@ public class BankAccount {
     private String acctName;
     private int acctNo;
     private Date dateOpened;
-    private float acctBalance;
+    private double acctBalance;
     private int alternateAcct; //momken a7oto m3 el acct details
     private String acctCurrency;
     private String acctDetails;
@@ -67,7 +67,7 @@ public class BankAccount {
         return alternateAcct;
     }
 
-    public float getBalance() {
+    public double getBalance() {
         return acctBalance;
     }
 
@@ -114,13 +114,13 @@ public class BankAccount {
         custId = customerId;
     }
 
-    public boolean setBalance(float balance, String currency) {
+    public boolean setBalance(double balance) {
         acctBalance = balance;
-        /*if the added currency is different from the original one
+        /*if the added currency is different from the orhiginal one
          So it needs to be converted to the original one*/
-        if (acctCurrency != currency)
-            return false;
-        acctCurrency = currency;
+        /*if (acctCurrency != currency)
+            return false;*/
+        //acctCurrency = currency;
         return true;
     }
 

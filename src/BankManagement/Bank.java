@@ -1,17 +1,25 @@
+package BankManagement;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.awt.*;
 import javax.swing.*;
 public class Bank {
+    static String id;
     private final String BankName;
     public Bank(){
-        BankName="IBS Bank";
+        BankName="IBS BankManagement.Bank";
     }
     public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        Bank Ba =new Bank();
+        Ba.id=sc.next();
+        new AccountMng();
+        new Transaction();
 
-        // creating Bank window with 2 buttons (login - register).
-        JFrame BankName = new JFrame("Bank Application");
+       /* // creating BankManagement.Bank window with 2 buttons (login - register).
+        JFrame BankName = new JFrame("BankManagement.Bank Application");
         BankName.setSize(700,500);
         BankName.setVisible(true);
         BankName.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -26,10 +34,10 @@ public class Bank {
         f2.setSize(700,500);
         f2.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        //creating the panel of Bank window and adding the buttons.
+        //creating the panel of BankManagement.Bank window and adding the buttons.
         JPanel p = new JPanel();
         BankName.add(p);
-        JLabel l1=  new JLabel("Welcome to IBS Bank");
+        JLabel l1=  new JLabel("Welcome to IBS BankManagement.Bank");
         l1.setVisible(true);
         p.add(l1);
         JButton btnlogin = new JButton("Login");
@@ -82,7 +90,7 @@ public class Bank {
 
         //creating the panel of Register window.
         JPanel preg = new JPanel();
-        f2.add(preg);
+        f2.add(preg);*/
     }
 
 
