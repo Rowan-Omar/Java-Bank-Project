@@ -1,11 +1,14 @@
 package BankManagement;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Scanner;
 
 
-public class BankAccount {
+public class BankAccount extends AccountMng {
     private String acctId;
     private int custId;
     private String acctName;
@@ -18,9 +21,55 @@ public class BankAccount {
     private String acctType; //whether it is saving account or checking account
 
     Scanner input = new Scanner(System.in);
+    static ArrayList<BankAccount> arrayFile;
+    BufferedReader accountCSVReader;
 
     //Constructor for adding account
     public BankAccount() {
+        //System.out.println(super.id);
+        int numRow = -1;
+        try {
+            accountCSVReader = new BufferedReader(new FileReader("src/BankManagement/accounts.csv"));
+            while (accountCSVReader.readLine() != null) { //this for knowing how many rows (account objects) exist in the Excel file
+                numRow++;
+            }
+            //System.out.println("There are " + numRow + " entries");
+            arrayFile = new ArrayList<>(numRow);
+        } catch (Exception ex) {
+            System.out.println("There is error in reading for the array size: " + ex);
+        }
+
+        //arraysFile = new Object[numRow][numCol];
+
+        String row;
+        String[] accountInfo;
+        int flag = 0;
+
+        try {
+            accountCSVReader = new BufferedReader(new FileReader("src/BankManagement/accounts.csv"));
+            while ((row = accountCSVReader.readLine()) != null) {
+                if (flag == 0) { //this to skip the header of the Excel file so as not to be added in our array
+                    flag = 1;
+                    continue;
+                }
+                accountInfo = row.split(",");
+
+                BankAccount newAccount; // ??????????????????????????? there is a question below
+                newAccount = new BankAccount(accountInfo[0], accountInfo[1], null, accountInfo[2]); // HOW to enhance this to be generic  col not by specifying the index of the array statically
+                newAccount.setBalance(new Double(accountInfo[3]));
+                arrayFile.add(newAccount);
+                // System.out.println(arrayFile);
+            }
+            accountCSVReader.close();
+        } catch (Exception ex) {
+            System.out.println("There is error in reading in the array: " + ex);
+        }
+        /*for (int i = 0; i < arrayFile.size(); i++) {
+            if (Objects.equals(arrayFile.get(i).getAcctId(), super.id)) {
+                System.out.println(arrayFile.get(i).getAcctName());
+            }
+        }*/
+        // new Transaction();
     }
 
     // public BankAccount(int accountId, String accountName, Date dateOpened, String accountDetails, int accountType, int customerId, int accountNumber) {
@@ -124,17 +173,17 @@ public class BankAccount {
         return true;
     }
 
-    public void calcBalanceWithdraw(float amount) { // when the user withdraw some amount // we could then return the new balance
+    public void calcBalanceWithdraw(double amount) { // when the user withdraw some amount // we could then return the new balance
         acctBalance -= amount;
     }
 
-    public void calcBalanceDeposite(float amount) {
+    public void calcBalanceDeposite(double amount) {
         acctBalance += amount;
     }
 
     public void getWithdrawInput() { //getting the amount to be withdrawn from the user
         System.out.println("Enter the amount to withdraw from your account: ");
-        float amount = input.nextFloat();
+        double amount = input.nextDouble();
         if ((acctBalance - amount) >= 0) {
             calcBalanceWithdraw(amount);
             System.out.println("New account balance: " + getBalance());
@@ -145,7 +194,7 @@ public class BankAccount {
 
     public void getDepositeInput() { //getting the amount to be deposited from the user
         System.out.println("Enter the amount to withdraw from your account: ");
-        float amount = input.nextFloat();
+        double amount = input.nextDouble();
         if (amount > 0) {
             calcBalanceDeposite(amount);
             System.out.println("New account balance: " + getBalance());
@@ -196,6 +245,25 @@ public class BankAccount {
     //waiting for the transaction class to be implemented
     public void getTransactions() {
 
+    }
+
+    public static boolean isValidAcc(String id) {
+        for (BankAccount bankAccount : arrayFile) {
+            if (Objects.equals(id, bankAccount.getAcctId()))
+                return true;
+        }
+        return false;
+    }
+
+    public static void arrayFileDisplay() {
+        int count;
+        if (arrayFile == null || arrayFile.size() == 0) {
+            System.out.println("The file is empty");
+            return;
+        }
+        count = 0;
+        for (BankAccount bankAccount : arrayFile)
+            System.out.println("This is the name of the account no. " + (++count) + " : " + bankAccount.getAcctName());
     }
 
 }

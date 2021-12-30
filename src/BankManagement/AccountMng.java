@@ -17,63 +17,17 @@ public class AccountMng extends Bank implements ActionListener {
     JFrame f;
     JTextField tId, tNum, tType, deleteId, editId;
     JButton bAdd, bRemove, bDisplay, bDone, bEdit;
-    BufferedReader accountCSVReader;
+
     BufferedWriter accountCSVWriter;
-    ArrayList<BankAccount> arrayFile;
+
 
     static BankAccount account = new BankAccount();
     LinkedList<BankAccount> bank = new LinkedList<>();
-    public AccountMng(){
-        System.out.println(super.id);
 
-        int numRow = -1;
-        try {
-            accountCSVReader = new BufferedReader(new FileReader("src/BankManagement/accounts.csv"));
-            while (accountCSVReader.readLine() != null) { //this for knowing how many rows (account objects) exist in the Excel file
-                numRow++;
-            }
-            System.out.println("There are " + numRow + " entries");
-            arrayFile = new ArrayList<>(numRow);
-        } catch (Exception ex) {
-            System.out.println("There is error in reading for the array size: " + ex);
-        }
-
-        //arraysFile = new Object[numRow][numCol];
-
-        String row;
-        String[] accountInfo;
-        int flag = 0;
-
-        try {
-            accountCSVReader = new BufferedReader(new FileReader("src/BankManagement/accounts.csv"));
-            while ((row = accountCSVReader.readLine()) != null) {
-                if (flag == 0) { //this to skip the header of the Excel file so as not to be added in our array
-                    flag = 1;
-                    continue;
-                }
-                accountInfo = row.split(",");
-
-                BankAccount newAccount; // ??????????????????????????? there is a question below
-                newAccount = new BankAccount(accountInfo[0], accountInfo[1], null, accountInfo[2]); // HOW to enhance this to be generic  col not by specifying the index of the array statically
-                newAccount.setBalance( new Double(accountInfo[3]));
-                arrayFile.add(newAccount);
-                // System.out.println(arrayFile);
-            }
-            accountCSVReader.close();
-        } catch (Exception ex) {
-            System.out.println("There is error in reading in the array: " + ex);
-        }
-        for(int i=0;i<arrayFile.size();i++){
-            if(Objects.equals(arrayFile.get(i).getAcctId(), super.id)){
-                System.out.print(arrayFile.get(i).getAcctName());
-            }
-        }
-       // new Transaction();
+    public AccountMng() {
     }
 
-    public AccountMng(int x) {
-
-
+    public AccountMng(int valid) {
         f = new JFrame("Accounts");
         f.setBackground(Color.white);
         f.setLayout(null);
@@ -147,31 +101,18 @@ public class AccountMng extends Bank implements ActionListener {
         f.setSize(900, 600);
         f.setLocation(400, 100);
         f.setVisible(true);
-
     }
-
-    public void arrayFileDisplay() {
-        int count;
-        if (arrayFile == null || arrayFile.size() == 0) {
-            System.out.println("The file is empty");
-            return;
-        }
-        count = 0;
-        for (BankAccount bankAccount : arrayFile)
-            System.out.println("This is the name of the account no. " + (++count) + " : " + bankAccount.getAcctName());
-    }
-
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (arrayFile != null && ae.getSource() == bAdd) {
+        if (BankAccount.arrayFile != null && ae.getSource() == bAdd) {
             BankAccount newRow;
             if (Objects.equals(tId.getText(), "")) {
                 JOptionPane.showMessageDialog(null, "Sorry, the Account ID field must not be empty");
                 return;
             }
             newRow = new BankAccount(tId.getText(), tNum.getText(), null, tType.getText());
-            arrayFile.add(newRow);
+            BankAccount.arrayFile.add(newRow);
             System.out.println("The account has been added successfully");
 
             /*            try {
@@ -214,7 +155,7 @@ public class AccountMng extends Bank implements ActionListener {
                 System.out.println("There is error in writing: " + ex);
             }*/
         } else if (ae.getSource() == bDisplay) {
-            arrayFileDisplay();
+            BankAccount.arrayFileDisplay();
             System.out.println("Display");
             /* try {
                 BufferedReader accountCSVReader = new BufferedReader(new FileReader("src/BankManagement/accounts.csv"));
@@ -245,13 +186,13 @@ public class AccountMng extends Bank implements ActionListener {
                 System.out.println("The id is: " + deleteId.getText());
                 // System.out.println("The account will: " + result);
 
-                if (arrayFile != null && result == 0 && !Objects.equals(deleteId.getText(), "")) {
+                if (BankAccount.arrayFile != null && result == 0 && !Objects.equals(deleteId.getText(), "")) {
                     int id = Integer.parseInt(deleteId.getText());
                     // if ((id % 2) == 0) {//deleting the id with even values // can be updated to delete ids if they are instances of customer class
-                    for (BankAccount account : arrayFile) {
+                    for (BankAccount account : BankAccount.arrayFile) {
                         if (Objects.equals(account.getAcctId(), deleteId.getText())) {
                             //System.out.println(account.getAcctName()+"  with index "+arrayFile.indexOf(account));
-                            arrayFile.remove(account);
+                            BankAccount.arrayFile.remove(account);
                             System.out.println("The account has been deleted");
                             return;
                         }
@@ -272,9 +213,9 @@ public class AccountMng extends Bank implements ActionListener {
 
             System.out.println("The id is: " + editId.getText());
 
-            if (arrayFile != null && result == 0 && !Objects.equals(editId.getText(), "")) {
+            if (BankAccount.arrayFile != null && result == 0 && !Objects.equals(editId.getText(), "")) {
                 int id = Integer.parseInt(editId.getText());
-                for (BankAccount account : arrayFile) {
+                for (BankAccount account : BankAccount.arrayFile) {
                     if ((Objects.equals(account.getAcctId(), editId.getText()))) {
                         //Here, we should make a window to appear to make the admin set the new values.
                         //Also, we need to ask him what specific field to be updated unless we will display all the fields, and he updates all of them!!
@@ -291,7 +232,7 @@ public class AccountMng extends Bank implements ActionListener {
                 accountCSVWriter.write("Account Number");
                 accountCSVWriter.append(',');
                 accountCSVWriter.write("Account Type");
-                for (BankAccount account : arrayFile) {
+                for (BankAccount account : BankAccount.arrayFile) {
                     accountCSVWriter.append('\n');
                     accountCSVWriter.append(account.getAcctId());
                     accountCSVWriter.append(',');
@@ -310,9 +251,6 @@ public class AccountMng extends Bank implements ActionListener {
         }
     }
 
-    /*public static void main(String[] args){
-        new AccountMng();
-        System.out.println(super.id);*/
-    }
 
+}
 

@@ -1,4 +1,4 @@
-package com.company;
+package customer.src.com.company;
 
 import javax.swing.*;
 import java.awt.Color;
@@ -127,17 +127,18 @@ import java.util.Objects;
 
 
 
+
+                    custoomerCSVWriter.write("First Name");
+                    custoomerCSVWriter.append(',');
+                    custoomerCSVWriter.write("Last Name");
+                    custoomerCSVWriter.append(',');
+                    custoomerCSVWriter.write("City");
+                    custoomerCSVWriter.append(',');
+                    custoomerCSVWriter.write("Street");
+                    custoomerCSVWriter.append(',');
+                    custoomerCSVWriter.write("Mobile");
+                    custoomerCSVWriter.append(',');
                     custoomerCSVWriter.write("Account id");
-                    custoomerCSVWriter.append(','); //to add new column
-                    custoomerCSVWriter.write("customer FirstName");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write("customer LastName");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write("customer City");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write("customer Street");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write("customer Mobile");
                     custoomerCSVWriter.append('\n'); //to add new row
                     custoomerCSVWriter.write("  ");
                     custoomerCSVWriter.append(',');
@@ -163,6 +164,7 @@ import java.util.Objects;
                     custoomerCSVWriter.append(',');
                     custoomerCSVWriter.write(" ");
                     custoomerCSVWriter.append('\n');
+
 
                     if (newRows.get(0) != null) {
                         custoomerCSVWriter.write(newRows.get(0));

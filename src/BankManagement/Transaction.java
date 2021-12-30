@@ -9,13 +9,14 @@ import java.util.Scanner;
 
 public class Transaction extends Bank {
 
-    static AccountMng Acc = new AccountMng();
-    String s=super.id;
-/*    static BankAccount account = AccountMng.account;*/
-    public Transaction(){
-      //ministatement();
+
+    String s;//=super.id;
+
+    /*    static BankAccount account = AccountMng.account;*/
+    public Transaction() {
+        //ministatement();
         Transfer();
-        }
+    }
  /*  public static void main(String[] args) {
 
     }*/
@@ -156,17 +157,16 @@ public class Transaction extends Bank {
         });
     }
 
-    void ministatement(){
-        for(int i=0;i<Acc.arrayFile.size();i++){
-            if(Objects.equals(Acc.arrayFile.get(i).getAcctId(), s)){
-                System.out.println("the num is"+ Acc.arrayFile.get(i).getAcctName());
-                System.out.println("the Type is"+ Acc.arrayFile.get(i).getAcctType());
-                System.out.println("the balance is"+ Acc.arrayFile.get(i).getBalance());
+    void ministatement() {
+        for (int i = 0; i < BankAccount.arrayFile.size(); i++) {
+            if (Objects.equals(BankAccount.arrayFile.get(i).getAcctId(), s)) {
+                System.out.println("the num is" + BankAccount.arrayFile.get(i).getAcctName());
+                System.out.println("the Type is" + BankAccount.arrayFile.get(i).getAcctType());
+                System.out.println("the balance is" + BankAccount.arrayFile.get(i).getBalance());
             }
         }
 
-        }
-
+    }
 
 
     void balcheck() throws Exception {
@@ -175,25 +175,29 @@ public class Transaction extends Bank {
 
     void Transfer() {
         Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the number of the receiver's account: ");
         String accnum = sc.next();
+        System.out.println();
+        System.out.print("Enter the amount to be transferred: ");
         double balanc = sc.nextDouble();
+        System.out.println();
         outer:
-        for (int i = 0; i < Acc.arrayFile.size(); i++) {
-            if(Objects.equals(Acc.arrayFile.get(i).getAcctId(), s)) {
-              if (Acc.arrayFile.get(i).getBalance() >= balanc){
-                  for (int j = 0; j < Acc.arrayFile.size(); j++) {
-                      String name = Acc.arrayFile.get(j).getAcctName();
-                      if (Objects.equals(name, accnum)) {
-                          double bal =Acc.arrayFile.get(j).getBalance();
-                          bal+=balanc;
-                          Acc.arrayFile.get(j).setBalance(bal);
-                          System.out.println(Acc.arrayFile.get(j).getBalance());
-                          Acc.arrayFile.get(i).setBalance(Acc.arrayFile.get(i).getBalance() - balanc);
-                          System.out.println(Acc.arrayFile.get(i).getBalance());
-                          break outer;
-                      }
-                  }
-              }
+        for (int i = 0; i < BankAccount.arrayFile.size(); i++) {
+            if (Objects.equals(BankAccount.arrayFile.get(i).getAcctId(), s)) {
+                if (BankAccount.arrayFile.get(i).getBalance() >= balanc) {
+                    for (int j = 0; j < BankAccount.arrayFile.size(); j++) {
+                        String name = BankAccount.arrayFile.get(j).getAcctName();
+                        if (Objects.equals(name, accnum)) {
+                            double bal = BankAccount.arrayFile.get(j).getBalance();
+                            bal += balanc;
+                            BankAccount.arrayFile.get(j).setBalance(bal);
+                            System.out.println(BankAccount.arrayFile.get(j).getBalance());
+                            BankAccount.arrayFile.get(i).setBalance(BankAccount.arrayFile.get(i).getBalance() - balanc);
+                            System.out.println("Your new balance: " + BankAccount.arrayFile.get(i).getBalance());
+                            break outer;
+                        }
+                    }
+                }
             }
 
         }
