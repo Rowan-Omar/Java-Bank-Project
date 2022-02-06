@@ -1,10 +1,11 @@
 package BankManagement;
 
 import javax.swing.*;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.*;
 
 import java.util.ArrayList;
@@ -12,10 +13,11 @@ import java.util.LinkedList;
 import java.util.Objects;
 
 
-public class AccountMng extends Bank implements ActionListener {
+///public class AccountMng extends Bank implements ActionListener {
+public class AccountMng implements ActionListener {
 
     JFrame f;
-    JTextField tId, tNum, tType, deleteId, editId;
+    JTextField tId, tNum, tType, removeId, editId;
     JButton bAdd, bRemove, bDisplay, bDone, bEdit;
 
     BufferedWriter accountCSVWriter;
@@ -24,13 +26,16 @@ public class AccountMng extends Bank implements ActionListener {
     static BankAccount account = new BankAccount();
     LinkedList<BankAccount> bank = new LinkedList<>();
 
+    final String ID = Login.id;
+
+    private int flag = 0; //to check whether the admin has uploaded the final updates before closing or not
+    // -1 -> changes happened // 0 -> no changes happened // 1 -> changes have been uploaded
+
     public AccountMng() {
     }
 
     public AccountMng(int valid) {
         f = new JFrame("Accounts");
-        f.setBackground(Color.white);
-        f.setLayout(null);
 
         JLabel lId = new JLabel("Account ID");
         lId.setBounds(50, 150, 100, 30);
@@ -97,119 +102,117 @@ public class AccountMng extends Bank implements ActionListener {
         bDone.addActionListener(this);
         f.add(bDone);
 
+
+        f.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (flag == -1) {
+                    int choice = JOptionPane.showConfirmDialog(null, "Warning: Changes made have not been uploaded to the file yet\nClick the \"Done\" button\nChoose \"Yes\" to ignore the changes made", "Sure to Exit?", 0, 2);
+                    if (choice != 0) {
+                        f.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                        return;
+                    }
+                }
+                Bank.bankFrame.setVisible(true);
+                f.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        });
+
         f.setLayout(null);
         f.setSize(900, 600);
-        f.setLocation(400, 100);
+        f.setLocation(370, 100);
         f.setVisible(true);
+        f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (BankAccount.arrayFile != null && ae.getSource() == bAdd) {
+            flag = -1; //to inform that changes happened and to be checked before closing this window
+
             BankAccount newRow;
             if (Objects.equals(tId.getText(), "")) {
                 JOptionPane.showMessageDialog(null, "Sorry, the Account ID field must not be empty");
                 return;
             }
+            if(tNum.getText().length() == 0)
+                tNum.setText("---");
+            if(tType.getText().length() == 0)
+                tType.setText("---");
             newRow = new BankAccount(tId.getText(), tNum.getText(), null, tType.getText());
             BankAccount.arrayFile.add(newRow);
-            System.out.println("The account has been added successfully");
+            JOptionPane.showMessageDialog(null, "This account has been added successfully");
 
-            /*            try {
-                accountCSVWriter = new BufferedWriter(new FileWriter("src/BankManagement/accounts.csv"));
-               newRows.add(0, tId.getText());
-                newRows.add(1, tNum.getText());
-                newRows.add(2, tType.getText());
-
-                /*
-                accountCSVWriter.write("Account id");
-                accountCSVWriter.append(','); //to add new column
-                accountCSVWriter.write("Account Number");
-                accountCSVWriter.append(',');
-                accountCSVWriter.write("Account Type");
-                accountCSVWriter.append('\n'); //to add new row
-                accountCSVWriter.write("1");
-                accountCSVWriter.append(',');
-                accountCSVWriter.write("11111");
-                accountCSVWriter.append(',');
-                accountCSVWriter.write("Saving");
-                accountCSVWriter.append('\n');
-                accountCSVWriter.write("2");
-                accountCSVWriter.append(',');
-                accountCSVWriter.write("22222");
-                accountCSVWriter.append(',');
-                accountCSVWriter.write("Checking");
-                accountCSVWriter.append('\n');
-                    accountCSVWriter.write(newRows.get(0));
-                    accountCSVWriter.append(',');
-                    accountCSVWriter.write(newRows.get(1));
-                    accountCSVWriter.append(',');
-                    accountCSVWriter.write(newRows.get(2));
-                    accountCSVWriter.append('\n');
-                } //
-
-                accountCSVWriter.flush();
-                accountCSVWriter.close();
-
-            } catch (Exception ex) {
-                System.out.println("There is error in writing: " + ex);
-            }*/
         } else if (ae.getSource() == bDisplay) {
             BankAccount.arrayFileDisplay();
-            System.out.println("Display");
-            /* try {
-                BufferedReader accountCSVReader = new BufferedReader(new FileReader("src/BankManagement/accounts.csv"));
-                while ((row = accountCSVReader.readLine()) != null) {
-                    accountInfo = row.split(",");
-                    //if (!Objects.equals(accountInfo[0], deleteId.getText())) { //to not view the deleted account //but this MUST be improved and be actual deleted
-                    for (int col = 0; col < accountInfo.length; col++) { // da biosher le r9m el column
-                        if (col == 0)
-                            System.out.print("|");
-                        System.out.printf("%17s", accountInfo[col] + " | ");
-                    }
-                    System.out.println();
-                    System.out.println("-".repeat(70));
-                    //}
-                }
-                accountCSVReader.close();
-            } catch (Exception ex) {
-                System.out.println("There is error in reading: " + ex);
-            }*/
+
         } else if (ae.getSource() == bRemove) {
             if (account instanceof BankAccount) { //to be improved so that we have an unknown object and here we check if it is the admin to delete a specific account
+                flag = -1;
                 System.out.println("This one is approved to remove");
-                String message = "Enter the id of the account to be deleted";
-                deleteId = new JTextField();
-                int result = JOptionPane.showOptionDialog(null, new Object[]{message, deleteId}, //to know if the user has cancelled the removal operation
-                        "Delete", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+                String message = "Enter the id of the account to be removed";
+                removeId = new JTextField();
+                int result = JOptionPane.showOptionDialog(null, new Object[]{message, removeId}, //to know if the user has cancelled the removal operation
+                        "Remove", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
-                System.out.println("The id is: " + deleteId.getText());
-                // System.out.println("The account will: " + result);
-
-                if (BankAccount.arrayFile != null && result == 0 && !Objects.equals(deleteId.getText(), "")) {
-                    int id = Integer.parseInt(deleteId.getText());
-                    // if ((id % 2) == 0) {//deleting the id with even values // can be updated to delete ids if they are instances of customer class
+                if (BankAccount.arrayFile != null && result == 0) {
+                    if(Objects.equals(removeId.getText(), "")) { //need to be updated so that the remove dialog do not disappear, or we can remove this if condition with no work to be done
+                        JOptionPane.showMessageDialog(null, "Enter the account's id to be removed");
+                        return;
+                    }
+                    int id = Integer.parseInt(removeId.getText());
+                    //NEED to be updated so that all admins can delete any customer but just one admin can delete other admins as well
                     for (BankAccount account : BankAccount.arrayFile) {
-                        if (Objects.equals(account.getAcctId(), deleteId.getText())) {
+                        if (Objects.equals(account.getAcctId(), removeId.getText())) {
                             //System.out.println(account.getAcctName()+"  with index "+arrayFile.indexOf(account));
                             BankAccount.arrayFile.remove(account);
-                            System.out.println("The account has been deleted");
+                            JOptionPane.showMessageDialog(null, "This account has been removed successfully");
                             return;
                         }
                     }
-                    // }
                 }
             } else if (bank instanceof LinkedList) {
                 JOptionPane.showMessageDialog(null, "Sorry, you are not authenticated to remove accounts");
             } else {
                 JOptionPane.showMessageDialog(null, "Not instance");
             }
-        } else if (ae.getSource() == bEdit) { //same condition will be applied here which are you must be an ADMIN
+        } else if (ae.getSource() == bEdit) { //same condition will be applied here which is "are you must be an ADMIN"
+            flag = -1;
             System.out.println("This one is approved to edit");
             String message = "Enter the id of the account to be edited";
             editId = new JTextField();
             int result = JOptionPane.showOptionDialog(null, new Object[]{message, editId}, //to know if the user has cancelled the removal operation
-                    "Delete", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+                    "Edit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
             System.out.println("The id is: " + editId.getText());
 
@@ -219,10 +222,12 @@ public class AccountMng extends Bank implements ActionListener {
                     if ((Objects.equals(account.getAcctId(), editId.getText()))) {
                         //Here, we should make a window to appear to make the admin set the new values.
                         //Also, we need to ask him what specific field to be updated unless we will display all the fields, and he updates all of them!!
-                        System.out.println("This account has been updated");
+                        String[] old = new String[]{account.getAcctType(), (account.getBalance()+"")};
+                        new EditFrame(account, old);
                         return;
                     }
                 }
+                JOptionPane.showMessageDialog(null, "This account does not exist");
             }
         } else if (ae.getSource() == bDone) {//upload the changes in the real file
             try {
@@ -232,6 +237,8 @@ public class AccountMng extends Bank implements ActionListener {
                 accountCSVWriter.write("Account Number");
                 accountCSVWriter.append(',');
                 accountCSVWriter.write("Account Type");
+                accountCSVWriter.append(',');
+                accountCSVWriter.write("Balance");
                 for (BankAccount account : BankAccount.arrayFile) {
                     accountCSVWriter.append('\n');
                     accountCSVWriter.append(account.getAcctId());
@@ -239,10 +246,14 @@ public class AccountMng extends Bank implements ActionListener {
                     accountCSVWriter.append(account.getAcctName());
                     accountCSVWriter.append(',');
                     accountCSVWriter.write(account.getAcctType());
+                    accountCSVWriter.append(',');
+                    accountCSVWriter.write(account.getBalance()+"");
                 }
                 JOptionPane.showMessageDialog(null, "The Excel file has been updated successfully");
                 accountCSVWriter.flush();
                 accountCSVWriter.close();
+
+                flag = 1; //meaning you can safely close
             } catch (Exception ex) {
                 System.out.println("There is error in writing in file: " + ex);
             }
@@ -251,6 +262,83 @@ public class AccountMng extends Bank implements ActionListener {
         }
     }
 
+}
 
+class EditFrame {
+    public EditFrame(BankAccount editedAcc,String[] oldData){ //oldData = ['AcctType', 'AcctBalance']
+        JFrame fEdit = new JFrame("Edit");
+
+        JPanel fieldsPnl = new JPanel();
+
+        JLabel lAccType = new JLabel("Account Type:");
+        lAccType.setBounds(30,50,80,30);
+
+        JTextField textAccType = new JTextField();
+        textAccType.setBounds(130,50,100,30);
+        textAccType.setText(oldData[0]);
+
+        JLabel lAccBalance = new JLabel("Account Balance: ");
+        lAccBalance.setBounds(300,50,125,30);
+
+        JTextField textAccBalance = new JTextField();
+        textAccBalance.setBounds(420,50,100,30);
+        textAccBalance.setText(oldData[1]);
+
+        fieldsPnl.add(lAccType);
+        fieldsPnl.add(textAccType);
+        fieldsPnl.add(lAccBalance);
+        fieldsPnl.add(textAccBalance);
+
+        fieldsPnl.setLayout(null);
+
+        JPanel btnPnl = new JPanel();
+
+        JButton bDone = new JButton("Done");
+        bDone.setBounds(220,50,100,30);
+        bDone.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent ae){
+                String type = textAccType.getText();
+                String balance = textAccBalance.getText();
+                if(type.length() == 0 || balance.length()== 0) {
+                    JOptionPane.showMessageDialog(null, "Text fields cannot be empty");
+                    return;
+                }
+                if ( !Objects.equals(type, oldData[0]) || !Objects.equals(balance, oldData[1])){
+                    editedAcc.setAcctType(type);
+                    editedAcc.setBalance(new Double(balance));
+                    JOptionPane.showMessageDialog(null, "This account has been updated successfully");
+                }
+                fEdit.setVisible(false);
+            }
+        });
+
+        JButton bBack = new JButton("Back");
+        bBack.setBounds(450,120,100,30);
+        bBack.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent ae){
+                fEdit.setVisible(false);
+            }
+        });
+
+        btnPnl.add(bDone);
+        btnPnl.add(bBack);
+
+        btnPnl.setLayout(null);
+
+        fEdit.add(fieldsPnl);
+        fEdit.add(btnPnl);
+
+        fEdit.setLayout(new GridLayout(2,1));
+        fEdit.setSize(600, 400);
+        fEdit.setLocation(500, 200);
+        fEdit.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        fEdit.setVisible(true);
+    }
+
+   /* public static void main(String[] args) {
+        new EditFrame();
+    }*/
 }
 

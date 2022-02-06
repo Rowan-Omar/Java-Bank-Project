@@ -7,8 +7,11 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Scanner;
 
+import static BankManagement.AccountMng.account;
 
-public class BankAccount extends AccountMng {
+
+public class BankAccount {
+
     private String acctId;
     private int custId;
     private String acctName;
@@ -24,13 +27,20 @@ public class BankAccount extends AccountMng {
     static ArrayList<BankAccount> arrayFile;
     BufferedReader accountCSVReader;
 
-    //Constructor for adding account
+    //Constructor for uploading the accounts from the file to the array
     public BankAccount() {
         //System.out.println(super.id);
         int numRow = -1;
+        String row;
+        int flag = 0;
+        int colCount = 0;
         try {
             accountCSVReader = new BufferedReader(new FileReader("src/BankManagement/accounts.csv"));
-            while (accountCSVReader.readLine() != null) { //this for knowing how many rows (account objects) exist in the Excel file
+            while ((row = accountCSVReader.readLine()) != null) { //this for knowing how many rows (account objects) exist in the Excel file
+                if (flag == 0) { //this to count the header data of the Excel file to know whether the data is missing a value
+                    colCount = row.split(",").length;
+                    flag = 1;
+                }
                 numRow++;
             }
             //System.out.println("There are " + numRow + " entries");
@@ -41,9 +51,9 @@ public class BankAccount extends AccountMng {
 
         //arraysFile = new Object[numRow][numCol];
 
-        String row;
+         row = "";
         String[] accountInfo;
-        int flag = 0;
+         flag = 0;
 
         try {
             accountCSVReader = new BufferedReader(new FileReader("src/BankManagement/accounts.csv"));
@@ -55,9 +65,13 @@ public class BankAccount extends AccountMng {
                 accountInfo = row.split(",");
 
                 BankAccount newAccount; // ??????????????????????????? there is a question below
-                newAccount = new BankAccount(accountInfo[0], accountInfo[1], null, accountInfo[2]); // HOW to enhance this to be generic  col not by specifying the index of the array statically
-                newAccount.setBalance(new Double(accountInfo[3]));
-                arrayFile.add(newAccount);
+                if(accountInfo.length == colCount){
+                    newAccount = new BankAccount(accountInfo[0], accountInfo[1], null, accountInfo[2]); // HOW to enhance this to be generic  col not by specifying the index of the array statically
+                    newAccount.setBalance(new Double(accountInfo[3]));
+                    arrayFile.add(newAccount);
+                }else{
+                    //fill the empty values with anything
+                }
                 // System.out.println(arrayFile);
             }
             accountCSVReader.close();
@@ -164,16 +178,25 @@ public class BankAccount extends AccountMng {
     }
 
     public boolean setBalance(double balance) {
+        if (balance < 0) {
+            System.out.println("Balance cannot be less than zero");
+            return false;
+        }
         acctBalance = balance;
-        /*if the added currency is different from the orhiginal one
-         So it needs to be converted to the original one*/
-        /*if (acctCurrency != currency)
-            return false;*/
-        //acctCurrency = currency;
         return true;
     }
 
-    public void calcBalanceWithdraw(double amount) { // when the user withdraw some amount // we could then return the new balance
+    public boolean setBalance(double balance, String currency) {
+        acctBalance = balance;
+        /*if the added currency is different from the original one
+         So it needs to be converted to the original one*/
+        if (acctCurrency != currency)
+            return false;
+        acctCurrency = currency;
+        return true;
+    }
+
+    /*public void calcBalanceWithdraw(double amount) { // when the user withdraw some amount // we could then return the new balance
         acctBalance -= amount;
     }
 
@@ -201,7 +224,7 @@ public class BankAccount extends AccountMng {
         } else {
             System.out.println("Sorry, the deposited amount cannot be negative or zero");
         }
-    }
+    }*/
 
     public void setAlternateAcct(int accountNo) {
         alternateAcct = accountNo;
@@ -256,14 +279,24 @@ public class BankAccount extends AccountMng {
     }
 
     public static void arrayFileDisplay() {
-        int count;
+       // int count;
         if (arrayFile == null || arrayFile.size() == 0) {
             System.out.println("The file is empty");
             return;
         }
-        count = 0;
-        for (BankAccount bankAccount : arrayFile)
-            System.out.println("This is the name of the account no. " + (++count) + " : " + bankAccount.getAcctName());
+       // count = 0;
+        for (BankAccount bankAccount : arrayFile) {
+            //System.out.println("This is the name of the account no. " + (++count) + " : " + bankAccount.getAcctName());
+
+            System.out.printf("%12s" ,bankAccount.acctId+" | ");
+            System.out.printf("%12s" ,bankAccount.custId+" | ");
+            System.out.printf("%12s" ,bankAccount.acctNo+" | ");
+            System.out.printf("%12s" ,bankAccount.acctBalance+" | ");
+            System.out.printf("%12s" ,bankAccount.alternateAcct+" | ");
+            System.out.printf("%12s" ,bankAccount.acctType+" | ");
+
+            System.out.println();
+        }
     }
 
 }

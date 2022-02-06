@@ -7,15 +7,17 @@ import java.awt.event.ActionListener;
 import java.util.Objects;
 import java.util.Scanner;
 
-public class Transaction extends Bank {
+//public class Transaction extends Bank {
+    public class Transaction {
 
 
-    String s;//=super.id;
+    final String ID = Login.id;//=super.id;
 
     /*    static BankAccount account = AccountMng.account;*/
     public Transaction() {
+        System.out.println("Id in transaction is: " + ID);
         //ministatement();
-        Transfer();
+        //Transfer();
     }
  /*  public static void main(String[] args) {
 
@@ -159,7 +161,7 @@ public class Transaction extends Bank {
 
     void ministatement() {
         for (int i = 0; i < BankAccount.arrayFile.size(); i++) {
-            if (Objects.equals(BankAccount.arrayFile.get(i).getAcctId(), s)) {
+            if (Objects.equals(BankAccount.arrayFile.get(i).getAcctId(), ID)) {
                 System.out.println("the num is" + BankAccount.arrayFile.get(i).getAcctName());
                 System.out.println("the Type is" + BankAccount.arrayFile.get(i).getAcctType());
                 System.out.println("the balance is" + BankAccount.arrayFile.get(i).getBalance());
@@ -183,7 +185,7 @@ public class Transaction extends Bank {
         System.out.println();
         outer:
         for (int i = 0; i < BankAccount.arrayFile.size(); i++) {
-            if (Objects.equals(BankAccount.arrayFile.get(i).getAcctId(), s)) {
+            if (Objects.equals(BankAccount.arrayFile.get(i).getAcctId(), ID)) {
                 if (BankAccount.arrayFile.get(i).getBalance() >= balanc) {
                     for (int j = 0; j < BankAccount.arrayFile.size(); j++) {
                         String name = BankAccount.arrayFile.get(j).getAcctName();
