@@ -20,7 +20,7 @@ import java.util.Objects;
         JTextField tMobile,DeleteId = new JTextField();
         JButton bAdd, bCancel,bDisplay;
 
-        Customer.src.com.company.BankCustomer customer = new Customer.src.com.company.BankCustomer();
+        BankCustomer customer = new BankCustomer();
 
         customer() {
             f = new JFrame("customer");
@@ -209,7 +209,7 @@ import java.util.Objects;
                     System.out.println("There is error in reading: " + ex);
                 }
             } else if (ae.getSource() == bCancel) {
-                if (customer instanceof Customer.src.com.company.BankCustomer) {
+                if (customer instanceof BankCustomer) {
                     System.out.println("This is one approved to remove");
                     String message = "Enter the id of the customer to be deleted";
                     DeleteId = new JTextField();
