@@ -1,6 +1,5 @@
-package customer.src.com.company;
+package com.company;
 
-import BankManagement.BankAccount;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,18 +9,20 @@ import java.util.Scanner;
 
 
 public class BankCustomer {
+    public static BankCustomer[] arrayFile;
     private int custId;
     private String custID;
     private String custFirstName;
     private String custLastName;
     private String custCity;
     private String custStreet;
-    private int custMobile;
+    private String custMobile;
 
+    Scanner input = new Scanner(System.in);
     BufferedReader customerCSVReader;
     static ArrayList<BankCustomer> arrCustomerFile;
 
-    Scanner input = new Scanner(System.in);
+
 
     //Constructor for adding customer
     public BankCustomer() {
@@ -75,7 +76,7 @@ public class BankCustomer {
         return false;
     }
 
-    public BankCustomer(int Id, String FirstName, String LastName, String City, String Street, int Mobile) {
+    public BankCustomer(int Id, String FirstName, String LastName, String City, String Street, String Mobile) {
         custId = Id;
         custFirstName = FirstName;
         custLastName = LastName;
@@ -109,7 +110,7 @@ public class BankCustomer {
         return custStreet;
     }
 
-    public int getCustMobile() {
+    public String getCustMobile() {
         return custMobile;
     }
 
@@ -136,7 +137,7 @@ public class BankCustomer {
         custStreet = Street;
     }
 
-    public void setCustMobile(int Mobile) {
+    public void setCustMobile(String Mobile) {
         custMobile = Mobile;
     }
 

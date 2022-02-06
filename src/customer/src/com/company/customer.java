@@ -1,4 +1,6 @@
-package customer.src.com.company;
+package com.company;
+
+import com.company.BankCustomer;
 
 import javax.swing.*;
 import java.awt.Color;
@@ -7,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,10 +21,13 @@ import java.util.Objects;
         JTextField tStreet;
         JTextField tCity;
         JTextField tMobile,DeleteId = new JTextField();
-        JButton bAdd, bCancel,bDisplay;
+        JButton bAdd, bCancel,bDisplay,bDone,bEdit;
 
         BankCustomer customer = new BankCustomer();
+        LinkedList<BankCustomer> bank = new LinkedList<>();
 
+
+        private int flag = 0;
         customer() {
             f = new JFrame("customer");
             f.setBackground(Color.red);
@@ -93,12 +99,31 @@ import java.util.Objects;
             bAdd.setBounds(400, 200, 150, 40);
             bAdd.addActionListener(this);
             f.add(bAdd);
+            bEdit = new JButton("Edit");
+            bEdit.setBackground(Color.BLACK);
+            bEdit.setForeground(Color.WHITE);
+            bEdit.setBounds(550, 450, 150, 40);
+            bEdit.addActionListener(this);
+            f.add(bEdit);
+
+            bDisplay = new JButton("Display");
+            bDisplay.setBackground(Color.BLACK);
+            bDisplay.setForeground(Color.WHITE);
+            bDisplay.setBounds(100, 500, 150, 40);
+            bDisplay.addActionListener(this);
+            f.add(bDisplay);
+
+            bDone = new JButton("Done");  //to update the Excel file with the final changes that happened
+            bDone.setBackground(Color.BLACK);
+            bDone.setForeground(Color.WHITE);
+            bDone.setBounds(350, 500, 150, 40);
+            bDone.addActionListener(this);
+            f.add(bDone);
 
             bCancel = new JButton("cancel");
             bCancel.setBackground(Color.BLACK);
             bCancel.setForeground(Color.WHITE);
             bCancel.setBounds(600, 200, 150, 40);
-
             bCancel.addActionListener(this);
             f.add(bCancel);
 
@@ -108,87 +133,28 @@ import java.util.Objects;
             f.setVisible(true);
 
         }
+         @Override
+     public void actionPerformed(ActionEvent ae) {
+    if (BankCustomer.arrayFile != null && ae.getSource() == bAdd) {
+        flag = -1; //to inform that changes happened and to be checked before closing this window
 
-        @Override
-        public void actionPerformed(ActionEvent ae) {
-            if (ae.getSource() == bAdd) {
-                BufferedWriter custoomerCSVWriter = null;
-                List<String> newRows = new ArrayList<String>();
-
-                try {
-                    custoomerCSVWriter = new BufferedWriter(new FileWriter("C:\\Users\\WIN 10\\Desktop\\untitled2\\custoomer.csv"));
-
-                    newRows.add(0, tId.getText());
-                    newRows.add(1, tFirstName.getText());
-                    newRows.add(2, tLastName.getText());
-                    newRows.add(3,tCity.getText());
-                    newRows.add(4, tStreet.getText());
-                    newRows.add(5,tMobile.getText());
-
-
-
-
-                    custoomerCSVWriter.write("First Name");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write("Last Name");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write("City");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write("Street");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write("Mobile");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write("Account id");
-                    custoomerCSVWriter.append('\n'); //to add new row
-                    custoomerCSVWriter.write("  ");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write("  ");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write("  ");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write(" ");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write(" ");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write(" ");
-                    custoomerCSVWriter.append('\n');
-                    custoomerCSVWriter.write(" ");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write(" ");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write(" ");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write(" ");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write(" ");
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write(" ");
-                    custoomerCSVWriter.append('\n');
+        BankCustomer newRow;
+        if (Objects.equals(tId.getText(), "")) {
+            JOptionPane.showMessageDialog(null, "Sorry, the Account ID field must not be empty");
+            return;
+        }
+        if(tFirstName.getText().length() == 0)
+            tFirstName.setText("---");
+        if(tLastName.getText().length() == 0)
+            tLastName.setText("---");
+        if(tMobile.getText().length() == 0)
+            tMobile.setText("---");
+        if(tCity.getText().length() == 0)
+            tCity.setText("---");
+        if(tStreet.getText().length() == 0)
+            tStreet.setText("---");
 
 
-                    if (newRows.get(0) != null) {
-                        custoomerCSVWriter.write(newRows.get(0));
-                        custoomerCSVWriter.append(',');
-                        custoomerCSVWriter.write(newRows.get(1));
-                        custoomerCSVWriter.append(',');
-                        custoomerCSVWriter.write(newRows.get(2));
-                        custoomerCSVWriter.append(',');
-                        custoomerCSVWriter.write(newRows.get(3));
-                        custoomerCSVWriter.append(',');
-                        custoomerCSVWriter.write(newRows.get(4));
-                        custoomerCSVWriter.append(',');
-                        custoomerCSVWriter.write(newRows.get(5));
-                        custoomerCSVWriter.append('\n');
-                    }
-
-
-                    custoomerCSVWriter.flush();
-                    custoomerCSVWriter.close();
-
-                } catch (Exception ex) {
-                    System.out.println("There is error in writing: " + ex);
-                }
-            } else if (ae.getSource() == bDisplay) {
                 //reading the file
                 String row;
                 String[] customerInfo = null;
