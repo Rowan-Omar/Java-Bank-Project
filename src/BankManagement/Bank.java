@@ -27,6 +27,17 @@ public class Bank {
 
         Image icon = Toolkit.getDefaultToolkit().getImage("E:\\Java Project\\Java-Bank-Project\\src\\bankIcon.png");
         bankFrame.setIconImage(icon);
+=======
+        Bank Ba =new Bank();
+        Ba.id=sc.next();
+        new AccountMng();
+        new Transaction();
+       /* // creating BankManagement.Bank window with 2 buttons (login - register).
+        JFrame BankName = new JFrame("BankManagement.Bank Application");
+        BankName.setSize(700,500);
+        BankName.setVisible(true);
+        BankName.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+>>>>>>> Stashed changes
 
         //creating the Login frame opened by Login button.
         /*NOTE: this is written in the Login class*/
