@@ -1,6 +1,5 @@
 package BankManagement;
 
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,6 +57,9 @@ import java.util.Scanner;
         withdraw.add(other);
         withdraw.setLayout(null);
         withdraw.setVisible(true);
+        for (int i = 0; i < BankAccount.arrayFile.size(); i++) {
+            if (Objects.equals(BankAccount.arrayFile.get(i).getAcctId(), ID)) {
+                System.out.println("the balance is" + BankAccount.arrayFile.get(i).getBalance());
         b1otherwith.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String cash = (String) cb.getItemAt(cb.getSelectedIndex());
@@ -80,7 +82,7 @@ import java.util.Scanner;
                     }
                 });
             }
-        });
+        });}}
         bwithdraw.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 long balance = 5000;
@@ -201,8 +203,6 @@ import java.util.Scanner;
                     }
                 }
             }
-
         }
-
     }
 }
