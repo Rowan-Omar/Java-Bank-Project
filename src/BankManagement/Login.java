@@ -39,7 +39,7 @@ public class Login {
 
                 //these two to load the data from the files to the arrays
                 new BankAccount();
-                new BankCustomer();
+                //new BankCustomer();
 
                 id = textID.getText();
                 char[] pass = psw.getPassword();
@@ -48,20 +48,21 @@ public class Login {
                     return;
                 }
                 System.out.println("Pass is: " + pass[0] + pass[1]);
-                if (BankAccount.isValidAcc(id)) { // Thus, it is an existed account
-                    if (BankCustomer.isValidCust(id)) { //thus, you are a customer
-                        new Transaction();
-                        textID.setText("");
-                        psw.setText("");
-                        fLogin.setVisible(false);
-                        System.out.println("You are a customer");
-                    } else {  //you are admin  // Need to be updated when the admin CSV file is created . because it can be not an admin also
+                if (BankAccount.isValidAcc(id)) { // Thus, it is an existing account
+                    //if (BankCustomer.isValidCust(id)) { //thus, you are a customer
+                    new Transaction();
+                    textID.setText("");
+                    psw.setText("");
+                    fLogin.setVisible(false);
+                    System.out.println("You are a customer");
+                    // }
+                    /*else {  //you are admin  // Need to be updated when the admin CSV file is created . because it can be not an admin also
                         new AccountMng(1);
                         textID.setText("");
                         psw.setText("");
                         fLogin.setVisible(false);
                         System.out.println("You are an admin");
-                    }
+                    }*/
                 } else {
                     JOptionPane.showMessageDialog(null, "This is an invalid account");
                 }
@@ -117,6 +118,5 @@ public class Login {
         fLogin.setLocation(550, 250);
         fLogin.setVisible(true);
     }
-
 
 }

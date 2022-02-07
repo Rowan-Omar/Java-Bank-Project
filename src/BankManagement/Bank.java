@@ -16,27 +16,13 @@ public class Bank {
     static final int LOCAL_WIDTH = 100, LOCAL_HEIGHT = 30;
 
     public Bank() {
-        Scanner sc = new Scanner(System.in);
-        //System.out.print("Enter your id: ");
-        //Ba.id = sc.next();
-
-        //new Transaction();
 
         // creating Bank window with 2 buttons (login - register).
         bankFrame = new JFrame(BANK_NAME);
 
         Image icon = Toolkit.getDefaultToolkit().getImage("E:\\Java Project\\Java-Bank-Project\\src\\bankIcon.png");
         bankFrame.setIconImage(icon);
-        Bank Ba =new Bank();
-        new AccountMng();
-        new Transaction();
-        new customer();
-       /* // creating BankManagement.Bank window with 2 buttons (login - register).
-        JFrame BankName = new JFrame("BankManagement.Bank Application");
-        BankName.setSize(700,500);
-        BankName.setVisible(true);
-        BankName.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
->>>>>>> Stashed changes
+
 
         //creating the Login frame opened by Login button.
         /*NOTE: this is written in the Login class*/

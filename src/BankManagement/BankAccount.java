@@ -15,7 +15,7 @@ public class BankAccount extends BankCustomer {
     private String acctId;
     private int custId;
     private String acctName;
-    private int acctNo;
+    private String acctNo;
     private Date dateOpened;
     private double acctBalance;
     private int alternateAcct; //momken a7oto m3 el acct details
@@ -51,9 +51,9 @@ public class BankAccount extends BankCustomer {
 
         //arraysFile = new Object[numRow][numCol];
 
-         row = "";
+        row = "";
         String[] accountInfo;
-         flag = 0;
+        flag = 0;
 
         try {
             accountCSVReader = new BufferedReader(new FileReader("src/BankManagement/accounts.csv"));
@@ -87,9 +87,9 @@ public class BankAccount extends BankCustomer {
     }
 
     // public BankAccount(int accountId, String accountName, Date dateOpened, String accountDetails, int accountType, int customerId, int accountNumber) {
-    public BankAccount(String accountId, String accountName, Date dateOpened, String accountType) {
+    public BankAccount(String accountId, String accountNo, Date dateOpened, String accountType) {
         acctId = accountId;
-        acctName = accountName;
+        acctNo = accountNo;
         this.dateOpened = dateOpened;
         //acctDetails = accountDetails;
         acctType = accountType;
@@ -106,7 +106,7 @@ public class BankAccount extends BankCustomer {
         return acctName;
     }
 
-    public int getAcctNo() {
+    public String getAcctNo() {
         return acctNo;
     }
 
@@ -157,8 +157,8 @@ public class BankAccount extends BankCustomer {
         acctName = accountName;
     }
 
-    public void setAcctName(int accountNumber) {
-        acctNo = accountNumber;
+    public void setAcctNo(String accountNo) {
+        acctNo = accountNo;
     }
 
     public void setDateOpened(Date dateOpened) {
@@ -232,7 +232,7 @@ public class BankAccount extends BankCustomer {
 
 
     //Methods
-    public boolean editAccount(String accountId, int accountNo, String accountDetails, int customerId) {
+    public boolean editAccount(String accountId, String accountNo, String accountDetails, int customerId) {
         if (accountId != acctId && accountNo != acctNo)
             return false; //this account does not exist
         acctDetails = accountDetails;
@@ -242,7 +242,7 @@ public class BankAccount extends BankCustomer {
 
     /*this can be implemented well in the admin class so to make the object created from this class to refer to null
      instead of referring to an object*/
-    public boolean deleteAccount(String accountId, int accountNo) {
+    public boolean deleteAccount(String accountId, String accountNo) {
         return (accountId == acctId && accountNo == acctNo);
     }
 
@@ -258,7 +258,7 @@ public class BankAccount extends BankCustomer {
     public String displayAcctDetails(String accountId) {
         if (!Objects.equals(accountId, acctId))
             return "This account does not exist";
-        if (custId == 0 || acctName == null || acctNo == 0 || dateOpened == null || acctBalance == 0 || alternateAcct == 0 || acctCurrency == null)
+        if (custId == 0 || acctName == null || acctNo == null || dateOpened == null || acctBalance == 0 || alternateAcct == 0 || acctCurrency == null)
             return "Cannot display the details of this account";
         //could enhance this by searching for the customer id for this account to get its name from the customer class
         return ("Account Name: " + acctName + "\tAccount No.: " + acctNo + "\tDate Opened : " + dateOpened + "\n"
@@ -279,12 +279,12 @@ public class BankAccount extends BankCustomer {
     }
 
     public static void arrayFileDisplay() {
-       // int count;
+        // int count;
         if (arrayFile == null || arrayFile.size() == 0) {
             System.out.println("The file is empty");
             return;
         }
-       // count = 0;
+        // count = 0;
         for (BankAccount bankAccount : arrayFile) {
             //System.out.println("This is the name of the account no. " + (++count) + " : " + bankAccount.getAcctName());
 
