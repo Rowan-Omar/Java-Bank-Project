@@ -10,7 +10,7 @@ import java.util.Scanner;
 import static BankManagement.AccountMng.account;
 
 
-public class BankAccount {
+public class BankAccount extends BankCustomer {
 
     private String acctId;
     private int custId;

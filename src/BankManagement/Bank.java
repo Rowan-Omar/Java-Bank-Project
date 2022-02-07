@@ -27,11 +27,10 @@ public class Bank {
 
         Image icon = Toolkit.getDefaultToolkit().getImage("E:\\Java Project\\Java-Bank-Project\\src\\bankIcon.png");
         bankFrame.setIconImage(icon);
-=======
         Bank Ba =new Bank();
-        Ba.id=sc.next();
         new AccountMng();
         new Transaction();
+        new customer();
        /* // creating BankManagement.Bank window with 2 buttons (login - register).
         JFrame BankName = new JFrame("BankManagement.Bank Application");
         BankName.setSize(700,500);
