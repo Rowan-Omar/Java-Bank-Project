@@ -15,7 +15,6 @@ public class Login {
     public Login() {
         JFrame fLogin = new JFrame("Login Window");
 
-
         //creating the panel of Login window with 2 textfields and (sign in) button.
         //JPanel plog = new JPanel();
 

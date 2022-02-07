@@ -5,15 +5,14 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
-import java.util.Scanner;
 
-import static BankManagement.AccountMng.account;
+
 
 
 //public class BankAccount extends BankCustomer {
 public class BankAccount {
     private String acctId;
-    private int custId;
+    private String custId;
     private String acctName;
     private String acctNo;
     private Date dateOpened;
@@ -24,7 +23,8 @@ public class BankAccount {
     private String acctType; //whether it is saving account or checking account
 
     //Scanner input = new Scanner(System.in);
-    static ArrayList<BankAccount> arrayFile;
+    static ArrayList<BankAccount> accountArrayFile;
+
     BufferedReader accountCSVReader;
 
     //Constructor for uploading the accounts from the file to the array
@@ -44,14 +44,13 @@ public class BankAccount {
                 numRow++;
             }
             //System.out.println("There are " + numRow + " entries");
-            arrayFile = new ArrayList<>(numRow);
+            accountArrayFile = new ArrayList<>(numRow);
         } catch (Exception ex) {
             System.out.println("There is error in reading for the array size: " + ex);
         }
 
         //arraysFile = new Object[numRow][numCol];
 
-        row = "";
         String[] accountInfo;
         flag = 0;
 
@@ -68,7 +67,7 @@ public class BankAccount {
                 if(accountInfo.length == colCount){
                     newAccount = new BankAccount(accountInfo[0], accountInfo[1], null, accountInfo[2]); // HOW to enhance this to be generic  col not by specifying the index of the array statically
                     newAccount.setBalance(new Double(accountInfo[3]));
-                    arrayFile.add(newAccount);
+                    accountArrayFile.add(newAccount);
                 }else{
                     //fill the empty values with anything
                 }
@@ -117,7 +116,7 @@ public class BankAccount {
         return acctType;
     }
 
-    public int getcustId() {
+    public String getCustId() {
         return custId;
     }
 
@@ -168,7 +167,7 @@ public class BankAccount {
         acctType = accountType;
     }
 
-    public void setCustId(int customerId) {
+    public void setCustId(String customerId) {
         custId = customerId;
     }
 
@@ -227,7 +226,7 @@ public class BankAccount {
 
 
     //Methods
-    public boolean editAccount(String accountId, String accountNo, String accountDetails, int customerId) {
+    public boolean editAccount(String accountId, String accountNo, String accountDetails, String customerId) {
         if (accountId != acctId && accountNo != acctNo)
             return false; //this account does not exist
         acctDetails = accountDetails;
@@ -253,7 +252,7 @@ public class BankAccount {
     public String displayAcctDetails(String accountId) {
         if (!Objects.equals(accountId, acctId))
             return "This account does not exist";
-        if (custId == 0 || acctName == null || acctNo == null || dateOpened == null || acctBalance == 0 || alternateAcct == 0 || acctCurrency == null)
+        if (custId == null || acctName == null || acctNo == null || dateOpened == null || acctBalance == 0 || alternateAcct == 0 || acctCurrency == null)
             return "Cannot display the details of this account";
         //could enhance this by searching for the customer id for this account to get its name from the customer class
         return ("Account Name: " + acctName + "\tAccount No.: " + acctNo + "\tDate Opened : " + dateOpened + "\n"
@@ -266,7 +265,7 @@ public class BankAccount {
     }
 
     public static boolean isValidAcc(String id) {
-        for (BankAccount bankAccount : arrayFile) {
+        for (BankAccount bankAccount : accountArrayFile) {
             if (Objects.equals(id, bankAccount.getAcctId()))
                 return true;
         }
@@ -275,12 +274,12 @@ public class BankAccount {
 
     public static void arrayFileDisplay() {
         // int count;
-        if (arrayFile == null || arrayFile.size() == 0) {
+        if (accountArrayFile == null || accountArrayFile.size() == 0) {
             System.out.println("The file is empty");
             return;
         }
         // count = 0;
-        for (BankAccount bankAccount : arrayFile) {
+        for (BankAccount bankAccount : accountArrayFile) {
             //System.out.println("This is the name of the account no. " + (++count) + " : " + bankAccount.getAcctName());
 
             System.out.printf("%12s" ,bankAccount.acctId+" | ");

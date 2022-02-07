@@ -16,10 +16,23 @@ public class BankCustomer {
     private String custStreet;
     private String custMobile;
 
-    BufferedReader accountCSVReader;
+    public String getAcctID() {
+        return acctID;
+    }
+
+    public void setAcctID(String acctID) {
+        this.acctID = acctID;
+    }
+
+    private String acctID;
+
+    private String post; //specified to the admins to know their position in the bank
+
+    private BufferedReader customerCSVReader, adminCSVReader;
 
 
     static ArrayList<BankCustomer> arrayFile;
+    public static ArrayList<BankCustomer> adminArrayFile;
 
     //Constructor for adding customer
     public BankCustomer() {
@@ -28,8 +41,8 @@ public class BankCustomer {
         int flag = 0;
         int colCount = 0;
         try {
-            accountCSVReader = new BufferedReader(new FileReader("src/Customer/customer.csv"));
-            while ((row = accountCSVReader.readLine()) != null) {
+            customerCSVReader = new BufferedReader(new FileReader("src/Customer/customer.csv"));
+            while ((row = customerCSVReader.readLine()) != null) {
                 if (flag == 0) {
                     colCount = row.split(",").length;
                     flag = 1;
@@ -46,8 +59,8 @@ public class BankCustomer {
         flag = 0;
 
         try {
-            accountCSVReader = new BufferedReader(new FileReader("src/Customer/customer.csv"));
-            while ((row = accountCSVReader.readLine()) != null) {
+            customerCSVReader = new BufferedReader(new FileReader("src/Customer/customer.csv"));
+            while ((row = customerCSVReader.readLine()) != null) {
                 if (flag == 0) {
                     flag = 1;
                     continue;
@@ -63,11 +76,68 @@ public class BankCustomer {
                 }
 
             }
-            accountCSVReader.close();
+            customerCSVReader.close();
+        } catch (Exception ex) {
+            System.out.println("There is error in reading in the array: " + ex);
+        }
+
+
+         numRow = -1;
+        row = "";
+        flag = 0;
+        colCount = 0;
+        try {
+            adminCSVReader = new BufferedReader(new FileReader("src/BankManagement/Admins.csv"));
+            while ((row = adminCSVReader.readLine()) != null) {
+                if (flag == 0) {
+                    colCount = row.split(",").length;
+                    flag = 1;
+                }
+                numRow++;
+            }
+
+            adminArrayFile = new ArrayList<>(numRow);
+        } catch (Exception ex) {
+            System.out.println("There is error in reading for the array size: " + ex);
+        }
+
+        String[] adminInfo;
+        flag = 0;
+        try {
+            adminCSVReader = new BufferedReader(new FileReader("src/BankManagement/Admins.csv"));
+            while ((row = adminCSVReader.readLine()) != null) {
+                if (flag == 0) {
+                    flag = 1;
+                    continue;
+                }
+                adminInfo = row.split(",");
+
+                BankCustomer newCustomer;
+                if (adminInfo.length == colCount) {
+                    newCustomer = new BankCustomer(adminInfo[0], adminInfo[1], adminInfo[2], adminInfo[3], adminInfo[4], adminInfo[5], adminInfo[6]);
+                    adminArrayFile.add(newCustomer);
+                } else {
+                    //fill the empty values with anything
+                }
+
+            }
+            adminCSVReader.close();
         } catch (Exception ex) {
             System.out.println("There is error in reading in the array: " + ex);
         }
     }
+
+    //this constructor for admins
+    public BankCustomer(String adminID, String firstName, String lastName, String post, String accountID ,String city, String mobile) {
+        custId = adminID;
+        custFirstName = firstName;
+        custLastName = lastName;
+        this.post = post;
+        acctID = accountID;
+        custCity = city;
+        custMobile = mobile;
+    }
+
 
     public BankCustomer(String Id, String FirstName, String LastName, String City, String Street, String Mobile) {
         custId = Id;
@@ -89,6 +159,10 @@ public class BankCustomer {
     // ---------- Getters ------------
     public String getCustId() {
         return custId;
+    }
+
+    public String getPost() {
+        return post;
     }
 
     public String getCustFirstName() {
@@ -124,6 +198,10 @@ public class BankCustomer {
 
     public void setCustLastName(String LastName) {
         custLastName = LastName;
+    }
+
+    public void setPost(String post) {
+        this.post = post;
     }
 
     public void setCustCity(String City) {
