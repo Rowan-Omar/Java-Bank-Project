@@ -1,29 +1,30 @@
-package BankManagement;
+package Customer;
 
 import javax.swing.*;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
-public class customer implements ActionListener  {
+public class CustomerDisplay implements ActionListener {
     JFrame f;
     JTextField tId;
     JTextField tFirstName;
     JTextField tLastName;
     JTextField tStreet;
     JTextField tCity;
-    JTextField tMobile,DeleteId = new JTextField();
-    JButton bAdd, bCancel,bDisplay;
+    JTextField tMobile, DeleteId = new JTextField();
+    JButton bAdd, bCancel, bDisplay;
 
     BankCustomer customer = new BankCustomer();
 
-    customer() {
+    CustomerDisplay() {
         f = new JFrame("customer");
         f.setBackground(Color.red);
         f.setLayout(null);
@@ -117,15 +118,14 @@ public class customer implements ActionListener  {
             List<String> newRows = new ArrayList<String>();
 
             try {
-                custoomerCSVWriter = new BufferedWriter(new FileWriter("C:\\Users\\WIN 10\\Desktop\\untitled2\\custoomer.csv"));
+                custoomerCSVWriter = new BufferedWriter(new FileWriter("C:\\Users\\WIN 10\\Desktop\\untitled2\\customer.csv"));
 
                 newRows.add(0, tId.getText());
                 newRows.add(1, tFirstName.getText());
                 newRows.add(2, tLastName.getText());
-                newRows.add(3,tCity.getText());
+                newRows.add(3, tCity.getText());
                 newRows.add(4, tStreet.getText());
-                newRows.add(5,tMobile.getText());
-
+                newRows.add(5, tMobile.getText());
 
 
                 custoomerCSVWriter.write("Account id");
@@ -192,8 +192,8 @@ public class customer implements ActionListener  {
             String row;
             String[] customerInfo = null;
             try {
-                BufferedReader  custoomerCSVReader = new BufferedReader(new FileReader("C:\\Users\\WIN 10\\Desktop\\untitled2\\custoomer.csv"));
-                while ((row =  custoomerCSVReader.readLine()) != null) {
+                BufferedReader custoomerCSVReader = new BufferedReader(new FileReader("C:\\Users\\WIN 10\\Desktop\\untitled2\\customer.csv"));
+                while ((row = custoomerCSVReader.readLine()) != null) {
                     customerInfo = row.split(",");
                     if (!Objects.equals(customerInfo[0], DeleteId.getText())) { //to not view the deleted account //but this MUST be improved and be actual deleted
                         for (int col = 0; col < customerInfo.length; col++) { // da biosher le r9m el column
@@ -228,8 +228,8 @@ public class customer implements ActionListener  {
                 String row;
                 String[] customerInfo = null;
                 try {
-                    BufferedReader  custoomerCSVReader = new BufferedReader(new FileReader("C:\\Users\\WIN 10\\Desktop\\untitled2\\custoomer.csv"));
-                    while ((row =  custoomerCSVReader.readLine()) != null) {
+                    BufferedReader custoomerCSVReader = new BufferedReader(new FileReader("C:\\Users\\WIN 10\\Desktop\\untitled2\\customer.csv"));
+                    while ((row = custoomerCSVReader.readLine()) != null) {
                         customerInfo = row.split(",");
                         // if (Objects.equals(customerInfo[0], deleteId.getText())) {
 
@@ -247,9 +247,9 @@ public class customer implements ActionListener  {
 
     }
 
-
-
+    public static void main(String[] args) throws Exception {
+        new CustomerDisplay();
     }
 
 
-
+}

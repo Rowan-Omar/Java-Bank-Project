@@ -10,8 +10,8 @@ import java.util.Scanner;
 import static BankManagement.AccountMng.account;
 
 
-public class BankAccount extends BankCustomer {
-
+//public class BankAccount extends BankCustomer {
+public class BankAccount {
     private String acctId;
     private int custId;
     private String acctName;
@@ -23,7 +23,7 @@ public class BankAccount extends BankCustomer {
     private String acctDetails;
     private String acctType; //whether it is saving account or checking account
 
-    Scanner input = new Scanner(System.in);
+    //Scanner input = new Scanner(System.in);
     static ArrayList<BankAccount> arrayFile;
     BufferedReader accountCSVReader;
 
@@ -78,12 +78,7 @@ public class BankAccount extends BankCustomer {
         } catch (Exception ex) {
             System.out.println("There is error in reading in the array: " + ex);
         }
-        /*for (int i = 0; i < arrayFile.size(); i++) {
-            if (Objects.equals(arrayFile.get(i).getAcctId(), super.id)) {
-                System.out.println(arrayFile.get(i).getAcctName());
-            }
-        }*/
-        // new Transaction();
+
     }
 
     // public BankAccount(int accountId, String accountName, Date dateOpened, String accountDetails, int accountType, int customerId, int accountNumber) {
