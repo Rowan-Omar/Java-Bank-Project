@@ -116,8 +116,6 @@ public class BankCustomer {
                 if (adminInfo.length == colCount) {
                     newCustomer = new BankCustomer(adminInfo[0], adminInfo[1], adminInfo[2], adminInfo[3], adminInfo[4], adminInfo[5], adminInfo[6]);
                     adminArrayFile.add(newCustomer);
-                } else {
-                    //fill the empty values with anything
                 }
 
             }

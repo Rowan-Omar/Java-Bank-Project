@@ -201,39 +201,52 @@ public class AccountMng implements ActionListener {
             BankAccount.arrayFileDisplay();
 
         } else if (ae.getSource() == bRemove) {
-            if (account instanceof BankAccount) { //to be improved so that we have an unknown object and here we check if it is the admin to delete a specific account
-                flag = -1;
-                System.out.println("This one is approved to remove");
-                String message = "Enter the id of the account to be removed";
-                removeId = new JTextField();
-                int result = JOptionPane.showOptionDialog(null, new Object[]{message, removeId}, //to know if the user has cancelled the removal operation
-                        "Remove", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+            //if (account instanceof BankAccount) { //to be improved so that we have an unknown object and here we check if it is the admin to delete a specific account
+            flag = -1;
+            System.out.println("This one is approved to remove");
+            String message = "Enter the id of the account to be removed";
+            removeId = new JTextField();
+            int result = JOptionPane.showOptionDialog(null, new Object[]{message, removeId}, //to know if the user has cancelled the removal operation
+                    "Remove", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
-                if (BankAccount.accountArrayFile != null && result == 0) {
-                    if (Objects.equals(removeId.getText(), "")) { //need to be updated so that the remove dialog do not disappear, or we can remove this if condition with no work to be done
-                        JOptionPane.showMessageDialog(null, "Enter the account's id to be removed");
-                        return;
+            if (BankAccount.accountArrayFile != null && result == 0) {
+                if (Objects.equals(removeId.getText(), "")) { //need to be updated so that the remove dialog do not disappear, or we can remove this if condition with no work to be done
+                    JOptionPane.showMessageDialog(null, "Enter the account's id to be removed");
+                    return;
+                }
+                int isMan = 0;
+                for (BankAccount account : BankAccount.accountArrayFile) {
+                    if (Objects.equals(account.getAcctId(), removeId.getText())) {
+                        isMan = 1;
                     }
-
-                    //NEED to be updated so that all admins can delete any customer but just one admin can delete other admins as well
-                    for (BankAccount account : BankAccount.accountArrayFile) {
-                        if (Objects.equals(account.getAcctId(), removeId.getText())) {
-                            //NEED to be handled correctly, I think we need to add another condition to handle all cases
-                            if ((Objects.equals(me.getPost(), "Manager")) && (me(account) != null) && (!Objects.equals(me(account).getPost(), "Manager"))) {
+                    if (isMan == 1) {
+                        if ((Objects.equals(me.getPost(), "Manager"))) {
+                            if ((me(account) != null) && (!Objects.equals(me(account).getPost(), "Manager"))) {
                                 //System.out.println(account.getAcctName()+"  with index "+accountArrayFile.indexOf(account));
                                 BankAccount.accountArrayFile.remove(account);
                                 JOptionPane.showMessageDialog(null, "This account has been removed successfully");
                                 return;
                             }
+                            JOptionPane.showMessageDialog(null, "This account cannot be removed");
+                            return;
                         }
+                        if (BankCustomer.isValidCust(account.getCustId())) {
+                            BankAccount.accountArrayFile.remove(account);
+                            JOptionPane.showMessageDialog(null, "This account has been removed successfully");
+                            return;
+                        }
+                        JOptionPane.showMessageDialog(null, "This account cannot be removed");
+                        return;
                     }
-                    JOptionPane.showMessageDialog(null, "This account cannot be removed");
                 }
-            } else if (bank instanceof LinkedList) {
+            }
+            JOptionPane.showMessageDialog(null, "This account does not exist");
+            /*} else if (bank instanceof LinkedList) {
                 JOptionPane.showMessageDialog(null, "Sorry, you are not authenticated to remove accounts");
             } else {
                 JOptionPane.showMessageDialog(null, "Not instance");
-            }
+            }*/
+
         } else if (ae.getSource() == bEdit) {
             flag = -1;
 
@@ -248,16 +261,18 @@ public class AccountMng implements ActionListener {
             if (myAcc != null && result == 0 && !Objects.equals(editId.getText(), "")) {
                 for (BankAccount account : BankAccount.accountArrayFile) {
                     if ((Objects.equals(account.getAcctId(), editId.getText()))) {
-                        if((!Objects.equals(me.getPost(), "Manager")) && (me(account) != null) && (Objects.equals(me(account).getPost(), "Manager"))){
-                            JOptionPane.showMessageDialog(null, "You are not authorized");
-                            return;
+                        if ((!Objects.equals(me.getPost(), "Manager"))) {
+                            if ((me(account) != null) && (Objects.equals(me(account).getPost(), "Manager"))
+                                    || (!BankCustomer.isValidCust(account.getCustId()))) {
+                                JOptionPane.showMessageDialog(null, "You are not authorized");
+                                return;
+                            }
                         }
                         String[] oldAcc = new String[]{account.getAcctType(), (account.getBalance() + "")};
                         new EditFrame(account, oldAcc);
                         return;
                     }
                 }
-
                 JOptionPane.showMessageDialog(null, "This account does not exist");
             }
         } else if (ae.getSource() == bDone) {//upload the changes in the real file
@@ -276,7 +291,7 @@ public class AccountMng implements ActionListener {
                     accountCSVWriter.append('\n');
                     accountCSVWriter.append(account.getAcctId());
                     accountCSVWriter.append(',');
-                    accountCSVWriter.append(account.getAcctName());
+                    accountCSVWriter.append(account.getAcctNo());
                     accountCSVWriter.append(',');
                     accountCSVWriter.write(account.getAcctType());
                     accountCSVWriter.append(',');

@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -28,7 +31,7 @@ public class Transaction {
         back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Are you sure to exit?","Exit", 0);
+                int choice = JOptionPane.showConfirmDialog(null, "Are you sure to exit?", "Exit", 0);
                 if (choice == 0) {
                     fTransaction.setVisible(false);
                     Bank.main(null);
@@ -167,7 +170,9 @@ public class Transaction {
                     if (balance >= amt) {
                         myAcc.setBalance(balance - amt);
                         JOptionPane.showMessageDialog(null, "The money has been withdrawn successfully");
-
+                        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                        LocalDateTime now = LocalDateTime.now();
+                        myAcc.getOperations().add(myAcc.getOperations().size(), "You withdrawn " + amt + " at " + dtf.format(now));
                         //l3with.setText("balance is " + balance);
                     } else {
                         // l3with.setText("error");
@@ -189,6 +194,9 @@ public class Transaction {
                         myAcc.setBalance(balance - amt);
                         //l3with.setText("balance is " + balance);
                         JOptionPane.showMessageDialog(null, "The money has been withdrawn successfully");
+                        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                        LocalDateTime now = LocalDateTime.now();
+                        myAcc.getOperations().add(myAcc.getOperations().size(), "You withdrawn " + amt + " at " + dtf.format(now));
                     } else {
                         //l3with.setText("error");
                         JOptionPane.showMessageDialog(null, "Sorry, you do not have enough money to withdraw this amount");
@@ -281,6 +289,9 @@ public class Transaction {
                     myAcc.setBalance(balance + amt);
                     //l3deposit.setText("balance is " + balance);
                     JOptionPane.showMessageDialog(null, "The money has been deposited successfully");
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                    LocalDateTime now = LocalDateTime.now();
+                    myAcc.getOperations().add(myAcc.getOperations().size(), "You deposited " + amt + " at " + dtf.format(now));
                 }
             }
         });
@@ -296,6 +307,9 @@ public class Transaction {
                     myAcc.setBalance(balance + amt);
                     //l3deposit.setText("balance is " + balance);
                     JOptionPane.showMessageDialog(null, "The money has been deposited successfully");
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                    LocalDateTime now = LocalDateTime.now();
+                    myAcc.getOperations().add(myAcc.getOperations().size(), "You deposited " + amt + " at " + dtf.format(now));
                 }
             }
         });
@@ -313,18 +327,22 @@ public class Transaction {
                 fTransaction.setVisible(true);
             }
         });
+        JLabel num;
+        int k = 100;
+        for (int i = 0; i < myAcc.getOperations().size(); i++) {
+            num = new JLabel(myAcc.getOperations().get(i));
+            num.setBounds(50, k, 300, 50);
+            k = k + 30;
+            ministate.add(num);
+        }
 
-        JLabel num = new JLabel("Account Number: ");
-        num.setBounds(100, 100, 100, 50);
-
-        JLabel type = new JLabel("Account Type: ");
+        /*JLabel type = new JLabel(myAcc.operations.get(1));
         type.setBounds(100, 130, 100, 50);
 
         JLabel balance = new JLabel("Account Balance: ");
-        balance.setBounds(100, 200, 100, 50);
+        balance.setBounds(100, 200, 100, 50);*/
 
-        System.out.println(myAcc.getAcctNo());
-        JTextField tNum = new JTextField(myAcc.getAcctNo());
+        /*JTextField tNum = new JTextField(myAcc.getAcctNo());
         tNum.setBounds(200, 100, 100, 50);
         tNum.setEnabled(false);
         tNum.setDisabledTextColor(Color.black);
@@ -337,24 +355,22 @@ public class Transaction {
         JTextField tBalance = new JTextField(myAcc.getBalance() + "");
         tBalance.setBounds(200, 200, 100, 50);
         tBalance.setEnabled(false);
-        tBalance.setDisabledTextColor(Color.black);
+        tBalance.setDisabledTextColor(Color.black);*/
 
 
-        ministate.add(num);
-        ministate.add(type);
+        /*ministate.add(type);
         ministate.add(balance);
         ministate.add(tNum);
         ministate.add(tType);
-        ministate.add(tBalance);
+        ministate.add(tBalance);*/
         ministate.add(back);
-
 
         ministate.setSize(400, 400);
         ministate.setLayout(null);
         ministate.setVisible(true);
     }
 
-    void balcheck() {
+    void balKnowledge() {
 
     }
 

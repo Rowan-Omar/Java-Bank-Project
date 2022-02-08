@@ -2,25 +2,28 @@ package BankManagement;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Objects;
-
-
-
 
 //public class BankAccount extends BankCustomer {
 public class BankAccount {
     private String acctId;
     private String custId;
-    private String acctName;
+
     private String acctNo;
-    private Date dateOpened;
+    private LocalDate dateOpened;
     private double acctBalance;
-    private int alternateAcct; //momken a7oto m3 el acct details
+    private String alternateAcctNo; //momken a7oto m3 el acct details
     private String acctCurrency;
-    private String acctDetails;
+
     private String acctType; //whether it is saving account or checking account
+
+    public ArrayList<String> getOperations() {
+        return operations;
+    }
+
+    private ArrayList<String> operations = new ArrayList<String>();
 
     //Scanner input = new Scanner(System.in);
     static ArrayList<BankAccount> accountArrayFile;
@@ -63,13 +66,17 @@ public class BankAccount {
                 }
                 accountInfo = row.split(",");
 
+                for (int i = 0; i < accountInfo.length; i++) {
+                    if (accountInfo[i] == null) {
+                        accountInfo[i] = "---";
+                    }
+                }
+
                 BankAccount newAccount; // ??????????????????????????? there is a question below
-                if(accountInfo.length == colCount){
-                    newAccount = new BankAccount(accountInfo[0], accountInfo[1], null, accountInfo[2]); // HOW to enhance this to be generic  col not by specifying the index of the array statically
-                    newAccount.setBalance(new Double(accountInfo[3]));
+                if (accountInfo.length == colCount) {
+                    newAccount = new BankAccount(accountInfo[0], accountInfo[1], LocalDate.now(), accountInfo[2]); // HOW to enhance this to be generic  col not by specifying the index of the array statically
+                    newAccount.setBalance(new Double(accountInfo[4]));
                     accountArrayFile.add(newAccount);
-                }else{
-                    //fill the empty values with anything
                 }
                 // System.out.println(arrayFile);
             }
@@ -81,14 +88,13 @@ public class BankAccount {
     }
 
     // public BankAccount(int accountId, String accountName, Date dateOpened, String accountDetails, int accountType, int customerId, int accountNumber) {
-    public BankAccount(String accountId, String accountNo, Date dateOpened, String accountType) {
+    public BankAccount(String accountId, String accountNo, String customerID, LocalDate dateOpened, String accountType) {
         acctId = accountId;
         acctNo = accountNo;
         this.dateOpened = dateOpened;
-        //acctDetails = accountDetails;
+
         acctType = accountType;
-        // custId = customerId;
-        // acctNo = accountNumber;
+        custId = customerID;
     }
 
     // ---------- Getters ------------
@@ -96,20 +102,12 @@ public class BankAccount {
         return acctId;
     }
 
-    public String getAcctName() {
-        return acctName;
-    }
-
     public String getAcctNo() {
         return acctNo;
     }
 
-    public Date getDateOpened() {
+    public LocalDate getDateOpened() {
         return dateOpened;
-    }
-
-    public String getAcctDetails() {
-        return acctDetails;
     }
 
     public String getAcctType() {
@@ -120,8 +118,8 @@ public class BankAccount {
         return custId;
     }
 
-    public int getAlternateAcct() {
-        return alternateAcct;
+    public String getAlternateAcct() {
+        return alternateAcctNo;
     }
 
     public double getBalance() {
@@ -147,21 +145,14 @@ public class BankAccount {
         acctId = accountId;
     }
 
-    public void setAcctName(String accountName) {
-        acctName = accountName;
-    }
-
     public void setAcctNo(String accountNo) {
         acctNo = accountNo;
     }
 
-    public void setDateOpened(Date dateOpened) {
+    public void setDateOpened(LocalDate dateOpened) {
         this.dateOpened = dateOpened;
     }
 
-    public void setAcctDetails(String accountDetails) {
-        acctDetails = accountDetails;
-    }
 
     public void setAcctType(String accountType) {
         acctType = accountType;
@@ -220,16 +211,16 @@ public class BankAccount {
         }
     }*/
 
-    public void setAlternateAcct(int accountNo) {
-        alternateAcct = accountNo;
+    public void setAlternateAcct(String accountNo) {
+        alternateAcctNo = accountNo;
     }
 
 
     //Methods
-    public boolean editAccount(String accountId, String accountNo, String accountDetails, String customerId) {
+    public boolean editAccount(String accountId, String accountNo, String customerId) {
         if (accountId != acctId && accountNo != acctNo)
             return false; //this account does not exist
-        acctDetails = accountDetails;
+
         custId = customerId;
         return true; //update is done
     }
@@ -252,11 +243,11 @@ public class BankAccount {
     public String displayAcctDetails(String accountId) {
         if (!Objects.equals(accountId, acctId))
             return "This account does not exist";
-        if (custId == null || acctName == null || acctNo == null || dateOpened == null || acctBalance == 0 || alternateAcct == 0 || acctCurrency == null)
+        if (custId == null || acctNo == null || dateOpened == null || acctBalance == 0 || alternateAcctNo == null || acctCurrency == null)
             return "Cannot display the details of this account";
         //could enhance this by searching for the customer id for this account to get its name from the customer class
-        return ("Account Name: " + acctName + "\tAccount No.: " + acctNo + "\tDate Opened : " + dateOpened + "\n"
-                + "\tCustomer ID: " + custId + "\tBalance: " + acctBalance + " " + getCurrency() + "\tAlternate Account No.: " + alternateAcct);
+        return ("Account No.: " + acctNo + "\tDate Opened : " + dateOpened + "\n"
+                + "\tCustomer ID: " + custId + "\tBalance: " + acctBalance + " " + getCurrency() + "\tAlternate Account No.: " + alternateAcctNo);
     }
 
     //waiting for the transaction class to be implemented
@@ -282,12 +273,12 @@ public class BankAccount {
         for (BankAccount bankAccount : accountArrayFile) {
             //System.out.println("This is the name of the account no. " + (++count) + " : " + bankAccount.getAcctName());
 
-            System.out.printf("%12s" ,bankAccount.acctId+" | ");
-            System.out.printf("%12s" ,bankAccount.custId+" | ");
-            System.out.printf("%12s" ,bankAccount.acctNo+" | ");
-            System.out.printf("%12s" ,bankAccount.acctBalance+" | ");
-            System.out.printf("%12s" ,bankAccount.alternateAcct+" | ");
-            System.out.printf("%12s" ,bankAccount.acctType+" | ");
+            System.out.printf("%12s", bankAccount.acctId + " | ");
+            System.out.printf("%12s", bankAccount.custId + " | ");
+            System.out.printf("%12s", bankAccount.acctNo + " | ");
+            System.out.printf("%12s", bankAccount.acctBalance + " | ");
+            System.out.printf("%12s", bankAccount.alternateAcctNo + " | ");
+            System.out.printf("%12s", bankAccount.acctType + " | ");
 
             System.out.println();
         }
