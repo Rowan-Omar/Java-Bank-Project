@@ -19,7 +19,7 @@ import java.util.Objects;
 public class AccountMng implements ActionListener {
 
     JFrame f;
-    JTextField tId, tNum, tType, removeId, editId;
+    JTextField tId, tNum, tType, removeId, editId, tCust;
     JButton bAdd, bRemove, bDisplay, bDone, bEdit;
 
     BufferedWriter accountCSVWriter;
@@ -90,6 +90,16 @@ public class AccountMng implements ActionListener {
         tType = new JTextField();
         tType.setBounds(150, 350, 150, 30);
         f.add(tType);
+
+        JLabel lCust = new JLabel("Customer Id");
+        lCust.setBounds(200, 300, 100, 30);
+        lCust.setFont(new Font("serif", Font.BOLD, 12));
+        lCust.setForeground(Color.black);
+        f.add(lCust);
+
+        tCust = new JTextField();
+        tCust.setBounds(300, 300, 150, 30);
+        f.add(tCust);
 
         bAdd = new JButton("Add");
         bAdd.setBackground(Color.BLACK);
@@ -193,7 +203,7 @@ public class AccountMng implements ActionListener {
                 tNum.setText("---");
             if (tType.getText().length() == 0)
                 tType.setText("---");
-            newRow = new BankAccount(tId.getText(), tNum.getText(), null, tType.getText());
+            newRow = new BankAccount(tId.getText(), tNum.getText(), null, tCust.getText(), tType.getText());
             BankAccount.accountArrayFile.add(newRow);
             JOptionPane.showMessageDialog(null, "This account has been added successfully");
 

@@ -74,7 +74,7 @@ public class BankAccount {
 
                 BankAccount newAccount; // ??????????????????????????? there is a question below
                 if (accountInfo.length == colCount) {
-                    newAccount = new BankAccount(accountInfo[0], accountInfo[1], LocalDate.now(), accountInfo[2]); // HOW to enhance this to be generic  col not by specifying the index of the array statically
+                    newAccount = new BankAccount(accountInfo[0], accountInfo[1], LocalDate.now(), accountInfo[3], accountInfo[2]); // HOW to enhance this to be generic  col not by specifying the index of the array statically
                     newAccount.setBalance(new Double(accountInfo[4]));
                     accountArrayFile.add(newAccount);
                 }
@@ -88,13 +88,12 @@ public class BankAccount {
     }
 
     // public BankAccount(int accountId, String accountName, Date dateOpened, String accountDetails, int accountType, int customerId, int accountNumber) {
-    public BankAccount(String accountId, String accountNo, String customerID, LocalDate dateOpened, String accountType) {
+    public BankAccount(String accountId, String accountNo, LocalDate dateOpened, String customerID, String accountType) {
         acctId = accountId;
         acctNo = accountNo;
-        this.dateOpened = dateOpened;
-
-        acctType = accountType;
         custId = customerID;
+        this.dateOpened = dateOpened;
+        acctType = accountType;
     }
 
     // ---------- Getters ------------
