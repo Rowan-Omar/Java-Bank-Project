@@ -1,6 +1,6 @@
 package BankManagement;
 
-import Customer.BankCustomer;
+import CUSTOMER.BankCustomer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,7 +46,7 @@ public class AccountMng implements ActionListener {
         return null;
     }
 
-    private BankCustomer me(BankAccount acc) {
+    private BankCustomer me( BankAccount acc) {
         for (BankCustomer admin : BankCustomer.adminArrayFile) {
             if (Objects.equals(admin.getCustId(), acc.getCustId())) {
                 return admin;

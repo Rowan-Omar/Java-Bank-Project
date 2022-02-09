@@ -1,7 +1,7 @@
 package BankManagement;
 
 
-import Customer.BankCustomer;
+import CUSTOMER.BankCustomer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

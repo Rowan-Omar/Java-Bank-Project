@@ -1,15 +1,12 @@
-package Customer;
+package CUSTOMER;
 
+import BankManagement.BankAccount;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class CustomerDisplay implements ActionListener {
@@ -19,12 +16,13 @@ public class CustomerDisplay implements ActionListener {
     JTextField tLastName;
     JTextField tStreet;
     JTextField tCity;
-    JTextField tMobile, DeleteId = new JTextField();
-    JButton bAdd, bCancel, bDisplay;
+    JTextField tMobile;
+    JButton bAdd, bDone, bCancel;
 
-    BankCustomer customer = new BankCustomer();
+    private int flag = 0;
+    BufferedWriter customersCSVWriter = null;
 
-    CustomerDisplay() {
+     CustomerDisplay ( ) {
         f = new JFrame("customer");
         f.setBackground(Color.red);
         f.setLayout(null);
@@ -92,14 +90,23 @@ public class CustomerDisplay implements ActionListener {
         bAdd = new JButton("Add");
         bAdd.setBackground(Color.BLACK);
         bAdd.setForeground(Color.WHITE);
-        bAdd.setBounds(400, 200, 150, 40);
+        bAdd.setBounds(400, 350, 150, 40);
         bAdd.addActionListener(this);
         f.add(bAdd);
 
-        bCancel = new JButton("cancel");
+
+        bDone = new JButton("Done");
+        bDone.setBackground(Color.BLACK);
+        bDone.setForeground(Color.WHITE);
+        bDone.setBounds(600, 200, 150, 40);
+
+        bDone.addActionListener(this);
+        f.add(bDone);
+
+        bCancel = new JButton("Cancel");
         bCancel.setBackground(Color.BLACK);
         bCancel.setForeground(Color.WHITE);
-        bCancel.setBounds(600, 200, 150, 40);
+        bCancel.setBounds(600, 250, 150, 40);
 
         bCancel.addActionListener(this);
         f.add(bCancel);
@@ -112,144 +119,85 @@ public class CustomerDisplay implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent ae) {
-        if (ae.getSource() == bAdd) {
-            BufferedWriter custoomerCSVWriter = null;
-            List<String> newRows = new ArrayList<String>();
+    public void actionPerformed ( ActionEvent ae ) {
+        if (BankCustomer.customerArrayFile != null && ae.getSource() == bAdd) {
+            flag = -1; //to inform that changes happened and to be checked before closing this window
+            BankCustomer newRow;
+
+            if (Objects.equals(tId.getText(), "")) {
+                JOptionPane.showMessageDialog(null, "Sorry, the Customer ID field must not be empty");
+                return;
+            }
+            if (tFirstName.getText().length() == 0)
+                tFirstName.setText("---");
+            if (tLastName.getText().length() == 0)
+                tLastName.setText("---");
+            if (tCity.getText().length() == 0)
+                tCity.setText("---");
+            if (tStreet.getText().length() == 0)
+                tStreet.setText("---");
+            if (tMobile.getText().length() == 0)
+                tMobile.setText("---");
+
+            newRow = new BankCustomer(tId.getText(), tFirstName.getText(), tLastName.getText(), tCity.getText(), null, tStreet.getText(), tMobile.getText());
+            BankCustomer.customerArrayFile.add(newRow);
+            JOptionPane.showMessageDialog(null, "This customer has been added successfully");
+        } else if (ae.getSource() == bDone) {
 
             try {
-                custoomerCSVWriter = new BufferedWriter(new FileWriter("C:\\Users\\WIN 10\\Desktop\\untitled2\\customer.csv"));
+                customersCSVWriter = new BufferedWriter(new FileWriter("C:\\Users\\WIN 10\\Desktop\\Java-Bank-Project\\src\\CUSTOMER\\customers.csv"));
 
-                newRows.add(0, tId.getText());
-                newRows.add(1, tFirstName.getText());
-                newRows.add(2, tLastName.getText());
-                newRows.add(3, tCity.getText());
-                newRows.add(4, tStreet.getText());
-                newRows.add(5, tMobile.getText());
+                customersCSVWriter.write("Customer id");
+                customersCSVWriter.append(','); //to add new column
+                customersCSVWriter.write("customer FirstName");
+                customersCSVWriter.append(',');
+                customersCSVWriter.write("customer LastName");
+                customersCSVWriter.append(',');
+                customersCSVWriter.write("customer City");
+                customersCSVWriter.append(',');
+                customersCSVWriter.write("customer Street");
+                customersCSVWriter.append(',');
+                customersCSVWriter.write("customer Mobile");
+                for (BankCustomer customer : BankCustomer.customerArrayFile) {
+                    customersCSVWriter.append('\n'); //to add new row
+                    customersCSVWriter.write(customer.getCustId());
+                    customersCSVWriter.append(',');
+                    customersCSVWriter.write(customer.getCustFirstName());
+                    customersCSVWriter.append(',');
+                    customersCSVWriter.write(customer.getCustLastName());
+                    customersCSVWriter.append(',');
+                    customersCSVWriter.write(customer.getCustCity());
+                    customersCSVWriter.append(',');
+                    customersCSVWriter.write(customer.getCustStreet());
+                    customersCSVWriter.append(',');
+                    customersCSVWriter.write(customer.getCustMobile());
 
-
-                custoomerCSVWriter.write("Account id");
-                custoomerCSVWriter.append(','); //to add new column
-                custoomerCSVWriter.write("customer FirstName");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write("customer LastName");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write("customer City");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write("customer Street");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write("customer Mobile");
-                custoomerCSVWriter.append('\n'); //to add new row
-                custoomerCSVWriter.write("  ");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write("  ");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write("  ");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write(" ");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write(" ");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write(" ");
-                custoomerCSVWriter.append('\n');
-                custoomerCSVWriter.write(" ");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write(" ");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write(" ");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write(" ");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write(" ");
-                custoomerCSVWriter.append(',');
-                custoomerCSVWriter.write(" ");
-                custoomerCSVWriter.append('\n');
-
-                if (newRows.get(0) != null) {
-                    custoomerCSVWriter.write(newRows.get(0));
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write(newRows.get(1));
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write(newRows.get(2));
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write(newRows.get(3));
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write(newRows.get(4));
-                    custoomerCSVWriter.append(',');
-                    custoomerCSVWriter.write(newRows.get(5));
-                    custoomerCSVWriter.append('\n');
                 }
-
-
-                custoomerCSVWriter.flush();
-                custoomerCSVWriter.close();
-
+                JOptionPane.showMessageDialog(null, "The Excel file has been update successfully");
+                customersCSVWriter.flush();
+                customersCSVWriter.close();
+                flag = -1;
             } catch (Exception ex) {
                 System.out.println("There is error in writing: " + ex);
             }
-        } else if (ae.getSource() == bDisplay) {
-            //reading the file
-            String row;
-            String[] customerInfo = null;
-            try {
-                BufferedReader custoomerCSVReader = new BufferedReader(new FileReader("C:\\Users\\WIN 10\\Desktop\\untitled2\\customer.csv"));
-                while ((row = custoomerCSVReader.readLine()) != null) {
-                    customerInfo = row.split(",");
-                    if (!Objects.equals(customerInfo[0], DeleteId.getText())) { //to not view the deleted account //but this MUST be improved and be actual deleted
-                        for (int col = 0; col < customerInfo.length; col++) { // da biosher le r9m el column
-                            if (col == 0)
-                                System.out.print("|");
-                            System.out.printf("%17s", customerInfo[col] + " | ");
-                        }
-                        System.out.println();
-                        System.out.println("-".repeat(70));
-                    }
-                }
-                custoomerCSVReader.close();
-            } catch (Exception ex) {
-                System.out.println("There is error in reading: " + ex);
-            }
+
         } else if (ae.getSource() == bCancel) {
-            if (customer instanceof BankCustomer) {
-                System.out.println("This is one approved to remove");
-                String message = "Enter the id of the customer to be deleted";
-                DeleteId = new JTextField();
-                int result = JOptionPane.showOptionDialog(null, new Object[]{message, DeleteId},
-                        "Delete", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-
-                System.out.println("The id is: " + DeleteId.getText());
-                System.out.println("The customer will: " + result);
-
-                int id = Integer.parseInt(DeleteId.getText());
-                if ((id % 2) == 0) {
-                    //deleting the id with even values // can be updated to delete ids if they are instance of customer class
-
-                }
-                String row;
-                String[] customerInfo = null;
-                try {
-                    BufferedReader custoomerCSVReader = new BufferedReader(new FileReader("C:\\Users\\WIN 10\\Desktop\\untitled2\\customer.csv"));
-                    while ((row = custoomerCSVReader.readLine()) != null) {
-                        customerInfo = row.split(",");
-                        // if (Objects.equals(customerInfo[0], deleteId.getText())) {
-
-                        // }
-                    }
-                    custoomerCSVReader.close();
-                } catch (Exception ex) {
-                    System.out.println("There is error in reading2: " + ex);
-                }
-
-            } else {
-                JOptionPane.showMessageDialog(null, "Not instance");
-            }
+            setVisible(false);
+            dispose();
         }
-
     }
 
-    public static void main(String[] args) throws Exception {
-        new CustomerDisplay();
+    private void dispose () {
+    }
+
+    private void setVisible ( boolean b ) {
+    }
+
+    public static void main (String[]args ){
+            new CustomerDisplay();
+        }
     }
 
 
-}
+
+

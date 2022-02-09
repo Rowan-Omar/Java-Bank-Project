@@ -1,4 +1,4 @@
-package Customer;
+package CUSTOMER;
 
 import BankManagement.BankAccount;
 
@@ -6,7 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Scanner;
+
 
 public class BankCustomer {
     private String custId;
@@ -31,7 +31,7 @@ public class BankCustomer {
     private BufferedReader customerCSVReader, adminCSVReader;
 
 
-    static ArrayList<BankCustomer> arrayFile;
+    static ArrayList<BankCustomer> customerArrayFile;
     public static ArrayList<BankCustomer> adminArrayFile;
 
     //Constructor for adding customer
@@ -41,7 +41,7 @@ public class BankCustomer {
         int flag = 0;
         int colCount = 0;
         try {
-            customerCSVReader = new BufferedReader(new FileReader("src/Customer/customer.csv"));
+            customerCSVReader = new BufferedReader(new FileReader("C:\\Users\\WIN 10\\Desktop\\Java-Bank-Project\\src\\CUSTOMER\\customer.csv"));
             while ((row = customerCSVReader.readLine()) != null) {
                 if (flag == 0) {
                     colCount = row.split(",").length;
@@ -50,27 +50,27 @@ public class BankCustomer {
                 numRow++;
             }
 
-            arrayFile = new ArrayList<>(numRow);
+            customerArrayFile = new ArrayList<>(numRow);
         } catch (Exception ex) {
             System.out.println("There is error in reading for the array size: " + ex);
         }
 
-        String[] accountInfo;
+        String[] customerInfo;
         flag = 0;
 
         try {
-            customerCSVReader = new BufferedReader(new FileReader("src/Customer/customer.csv"));
+            customerCSVReader = new BufferedReader(new FileReader("C:\\Users\\WIN 10\\Desktop\\Java-Bank-Project\\src\\CUSTOMER\\customers.csv"));
             while ((row = customerCSVReader.readLine()) != null) {
                 if (flag == 0) {
                     flag = 1;
                     continue;
                 }
-                accountInfo = row.split(",");
+                customerInfo = row.split(",");
 
-                BankCustomer newAccount;
-                if (accountInfo.length == colCount) {
-                    newAccount = new BankCustomer(accountInfo[0], accountInfo[1], accountInfo[2], accountInfo[3], accountInfo[4], accountInfo[5]);
-                    arrayFile.add(newAccount);
+                BankCustomer newCustomer;
+                if (customerInfo.length == colCount) {
+                    newCustomer = new BankCustomer(customerInfo[0], customerInfo[1], customerInfo[2], customerInfo[3], customerInfo[4], customerInfo[5]);
+                    customerArrayFile.add(newCustomer);
                 } else {
                     //fill the empty values with anything
                 }
@@ -147,7 +147,7 @@ public class BankCustomer {
     }
 
     public static boolean isValidCust(String id) {
-        for (BankCustomer customer : arrayFile) {
+        for (BankCustomer customer : customerArrayFile) {
             if (Objects.equals(id, customer.getCustId()))
                 return true;
         }
