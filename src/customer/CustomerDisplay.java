@@ -1,6 +1,5 @@
 package CUSTOMER;
 
-import BankManagement.BankAccount;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,12 +16,12 @@ public class CustomerDisplay implements ActionListener {
     JTextField tStreet;
     JTextField tCity;
     JTextField tMobile;
-    JButton bAdd, bDone, bCancel;
+    JButton bAdd, bCancel, bDone;
 
-    private int flag = 0;
-    BufferedWriter customersCSVWriter = null;
+    int flag = 0;
+    BufferedWriter customerCSVWriter;
 
-     CustomerDisplay ( ) {
+    CustomerDisplay () {
         f = new JFrame("customer");
         f.setBackground(Color.red);
         f.setLayout(null);
@@ -94,7 +93,6 @@ public class CustomerDisplay implements ActionListener {
         bAdd.addActionListener(this);
         f.add(bAdd);
 
-
         bDone = new JButton("Done");
         bDone.setBackground(Color.BLACK);
         bDone.setForeground(Color.WHITE);
@@ -122,6 +120,7 @@ public class CustomerDisplay implements ActionListener {
     public void actionPerformed ( ActionEvent ae ) {
         if (BankCustomer.customerArrayFile != null && ae.getSource() == bAdd) {
             flag = -1; //to inform that changes happened and to be checked before closing this window
+
             BankCustomer newRow;
 
             if (Objects.equals(tId.getText(), "")) {
@@ -129,13 +128,13 @@ public class CustomerDisplay implements ActionListener {
                 return;
             }
             if (tFirstName.getText().length() == 0)
-                tFirstName.setText("---");
+                tFirstName.setText("-----");
             if (tLastName.getText().length() == 0)
-                tLastName.setText("---");
+                tLastName.setText("-----");
             if (tCity.getText().length() == 0)
-                tCity.setText("---");
+                tCity.setText("-----");
             if (tStreet.getText().length() == 0)
-                tStreet.setText("---");
+                tStreet.setText("-----");
             if (tMobile.getText().length() == 0)
                 tMobile.setText("---");
 
@@ -145,58 +144,51 @@ public class CustomerDisplay implements ActionListener {
         } else if (ae.getSource() == bDone) {
 
             try {
-                customersCSVWriter = new BufferedWriter(new FileWriter("C:\\Users\\WIN 10\\Desktop\\Java-Bank-Project\\src\\CUSTOMER\\customers.csv"));
+                customerCSVWriter = new BufferedWriter(new FileWriter("src/CUSTOMER/customers.csv"));
 
-                customersCSVWriter.write("Customer id");
-                customersCSVWriter.append(','); //to add new column
-                customersCSVWriter.write("customer FirstName");
-                customersCSVWriter.append(',');
-                customersCSVWriter.write("customer LastName");
-                customersCSVWriter.append(',');
-                customersCSVWriter.write("customer City");
-                customersCSVWriter.append(',');
-                customersCSVWriter.write("customer Street");
-                customersCSVWriter.append(',');
-                customersCSVWriter.write("customer Mobile");
+                customerCSVWriter.write("Customer id");
+                customerCSVWriter.append(','); //to add new column
+                customerCSVWriter.write("customer FirstName");
+                customerCSVWriter.append(',');
+                customerCSVWriter.write("customer LastName");
+                customerCSVWriter.append(',');
+                customerCSVWriter.write("customer City");
+                customerCSVWriter.append(',');
+                customerCSVWriter.write("customer Street");
+                customerCSVWriter.append(',');
+                customerCSVWriter.write("customer Mobile");
                 for (BankCustomer customer : BankCustomer.customerArrayFile) {
-                    customersCSVWriter.append('\n'); //to add new row
-                    customersCSVWriter.write(customer.getCustId());
-                    customersCSVWriter.append(',');
-                    customersCSVWriter.write(customer.getCustFirstName());
-                    customersCSVWriter.append(',');
-                    customersCSVWriter.write(customer.getCustLastName());
-                    customersCSVWriter.append(',');
-                    customersCSVWriter.write(customer.getCustCity());
-                    customersCSVWriter.append(',');
-                    customersCSVWriter.write(customer.getCustStreet());
-                    customersCSVWriter.append(',');
-                    customersCSVWriter.write(customer.getCustMobile());
+                    customerCSVWriter.append('\n'); //to add new row
+                    customerCSVWriter.write(customer.getCustId());
+                    customerCSVWriter.append(',');
+                    customerCSVWriter.write(customer.getCustFirstName());
+                    customerCSVWriter.append(',');
+                    customerCSVWriter.write(customer.getCustLastName());
+                    customerCSVWriter.append(',');
+                    customerCSVWriter.write(customer.getCustCity());
+                    customerCSVWriter.append(',');
+                    customerCSVWriter.write(customer.getCustStreet());
+                    customerCSVWriter.append(',');
+                    customerCSVWriter.write(customer.getCustMobile());
 
                 }
                 JOptionPane.showMessageDialog(null, "The Excel file has been update successfully");
-                customersCSVWriter.flush();
-                customersCSVWriter.close();
+                customerCSVWriter.flush();
+                customerCSVWriter.close();
                 flag = -1;
             } catch (Exception ex) {
                 System.out.println("There is error in writing: " + ex);
             }
-
         } else if (ae.getSource() == bCancel) {
-            setVisible(false);
-            dispose();
+            f.setVisible(false);
         }
     }
 
-    private void dispose () {
-    }
-
-    private void setVisible ( boolean b ) {
-    }
 
     public static void main (String[]args ){
             new CustomerDisplay();
         }
-    }
+}
 
 
 
