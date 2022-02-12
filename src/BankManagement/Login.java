@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Arrays;
 
 public class Login {
     static String id;
@@ -48,14 +49,19 @@ public class Login {
                     JOptionPane.showMessageDialog(null, "Both fields must be entered");
                     return;
                 }
-                System.out.println("Pass is: " + pass[0] + pass[1]);
+                System.out.println("Pass is: " + pass.length);
                 if (BankAccount.isValidAcc(id)) { // Thus, it is an existing account
                     if (BankCustomer.isValidCust(id)) { //thus, you are a customer
-                        new Transaction();
-                        textID.setText("");
-                        psw.setText("");
-                        fLogin.setVisible(false);
-                        System.out.println("You are a customer");
+                        if (BankCustomer.isValidPass(String.valueOf(pass))) {
+                            new Transaction();
+                            textID.setText("");
+                            psw.setText("");
+                            fLogin.setVisible(false);
+                            System.out.println("You are a customer");
+                        }else{
+                            System.out.println("Wrong password");
+                            JOptionPane.showMessageDialog(null, "This is an invalid account");
+                        }
                     } else {  //you are admin  // Need to be updated when the admin CSV file is created . because it can be not an admin also
                         new AccountMng(1);
                         textID.setText("");

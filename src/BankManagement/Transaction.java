@@ -94,7 +94,7 @@ public class Transaction {
 
     private BankAccount me() {
         for (BankAccount account : BankAccount.accountArrayFile) {
-            if (Objects.equals(account.getAcctId(), ID)) {
+            if (Objects.equals(account.getAcctID(), ID)) {
                 return account;
             }
         }

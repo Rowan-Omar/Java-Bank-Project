@@ -4,24 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.Objects;
 
 public class CustomerDisplay implements ActionListener {
-    JFrame f;
-    JTextField tId;
-    JTextField tFirstName;
-    JTextField tLastName;
-    JTextField tStreet;
-    JTextField tCity;
-    JTextField tMobile;
+    public static JFrame f;
+    JTextField tId, tFirstName, tLastName, tStreet, tCity, tMobile;
     JButton bAdd, bCancel, bDone;
 
+    public static String custID, password;
     int flag = 0;
-    BufferedWriter customerCSVWriter;
 
-    CustomerDisplay () {
+    public CustomerDisplay() {
         f = new JFrame("customer");
         f.setBackground(Color.red);
         f.setLayout(null);
@@ -36,7 +29,7 @@ public class CustomerDisplay implements ActionListener {
         tId.setBounds(150, 50, 150, 30);
         f.add(tId);
 
-        JLabel lFirstName = new JLabel("FirstName");
+        JLabel lFirstName = new JLabel("First Name");
         lFirstName.setBounds(50, 100, 100, 30);
         lFirstName.setFont(new Font("serif", Font.BOLD, 12));
         lFirstName.setForeground(Color.black);
@@ -46,7 +39,7 @@ public class CustomerDisplay implements ActionListener {
         tFirstName.setBounds(150, 100, 150, 30);
         f.add(tFirstName);
 
-        JLabel lLastName = new JLabel("LastName");
+        JLabel lLastName = new JLabel("Last Name");
         lLastName.setBounds(50, 150, 100, 30);
         lLastName.setFont(new Font("serif", Font.BOLD, 12));
         lLastName.setForeground(Color.black);
@@ -117,8 +110,8 @@ public class CustomerDisplay implements ActionListener {
     }
 
     @Override
-    public void actionPerformed ( ActionEvent ae ) {
-        if (BankCustomer.customerArrayFile != null && ae.getSource() == bAdd) {
+    public void actionPerformed(ActionEvent ae) {
+        if (BankCustomer.getCustArrayFile() != null && ae.getSource() == bAdd) {
             flag = -1; //to inform that changes happened and to be checked before closing this window
 
             BankCustomer newRow;
@@ -139,60 +132,22 @@ public class CustomerDisplay implements ActionListener {
                 tMobile.setText("---");
 
             newRow = new BankCustomer(tId.getText(), tFirstName.getText(), tLastName.getText(), tCity.getText(), tStreet.getText(), tMobile.getText());
-            BankCustomer.customerArrayFile.add(newRow);
+            BankCustomer.getCustArrayFile().add(newRow);
+            custID = tId.getText();
             JOptionPane.showMessageDialog(null, "This customer has been added successfully");
         } else if (ae.getSource() == bDone) {
-
-            try {
-                customerCSVWriter = new BufferedWriter(new FileWriter("src/Customer/Customers.csv"));
-
-                customerCSVWriter.write("ID");
-                customerCSVWriter.append(','); //to add new column
-                customerCSVWriter.write("First Name");
-                customerCSVWriter.append(',');
-                customerCSVWriter.write("Last Name");
-                customerCSVWriter.append(',');
-                customerCSVWriter.write("City");
-                customerCSVWriter.append(',');
-                customerCSVWriter.write("Street");
-                customerCSVWriter.append(',');
-                customerCSVWriter.write("Mobile");
-                if(BankCustomer.customerArrayFile == null)
-                    return;
-                for (BankCustomer customer : BankCustomer.customerArrayFile) {
-                    customerCSVWriter.append('\n'); //to add new row
-                    System.out.println("writing in file " + customer);
-                    customerCSVWriter.write(customer.getCustId());
-                    customerCSVWriter.append(',');
-                    customerCSVWriter.write(customer.getCustFirstName());
-                    customerCSVWriter.append(',');
-                    customerCSVWriter.write(customer.getCustLastName());
-                    customerCSVWriter.append(',');
-                    customerCSVWriter.write(customer.getCustCity());
-                    customerCSVWriter.append(',');
-                    customerCSVWriter.write(customer.getCustStreet());
-                    customerCSVWriter.append(',');
-                    customerCSVWriter.write(customer.getCustMobile());
-
-                }
-                JOptionPane.showMessageDialog(null, "The Excel file has been update successfully");
-                customerCSVWriter.flush();
-                customerCSVWriter.close();
-                flag = -1;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                System.out.println("There is error in writing: " + ex);
-            }
+            BankCustomer.writeToFile();
+            JOptionPane.showMessageDialog(null, "Customer excel file has been update successfully");
+            flag = 1;
         } else if (ae.getSource() == bCancel) {
             f.setVisible(false);
         }
     }
 
-
-    public static void main (String[]args ){
+    public static void main(String[] args) {
         new BankCustomer();
-            new CustomerDisplay();
-        }
+        new CustomerDisplay();
+    }
 }
 
 

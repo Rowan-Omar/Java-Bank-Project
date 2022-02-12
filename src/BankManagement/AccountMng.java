@@ -1,15 +1,15 @@
 package BankManagement;
 
 import Customer.BankCustomer;
+import Customer.CustomerDisplay;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.io.*;
 
+import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -22,8 +22,6 @@ public class AccountMng implements ActionListener {
     JTextField tId, tNum, tType, removeId, editId, tCust;
     JButton bAdd, bRemove, bDisplay, bDone, bEdit;
 
-    BufferedWriter accountCSVWriter;
-
     static BankAccount account = new BankAccount();
     LinkedList<BankAccount> bank = new LinkedList<>();
 
@@ -31,32 +29,14 @@ public class AccountMng implements ActionListener {
     private BankAccount myAcc;
     private BankCustomer me;
 
-    private int flag = 0; //to check whether the admin has uploaded the final updates before closing or not
+    private int flag = 0, flagRem = 0; //var 'flag' to check whether the admin has uploaded the final updates before closing or not
     // -1 -> changes happened // 0 -> no changes happened // 1 -> changes have been uploaded
 
     public AccountMng() {
     }
 
-    private BankAccount myAccount() {
-        for (BankAccount account : BankAccount.accountArrayFile) {
-            if (Objects.equals(account.getAcctId(), ID)) {
-                return account;
-            }
-        }
-        return null;
-    }
-
-    private BankCustomer me( BankAccount acc) {
-        for (BankCustomer admin : BankCustomer.adminArrayFile) {
-            if (Objects.equals(admin.getCustId(), acc.getCustId())) {
-                return admin;
-            }
-        }
-        return null;
-    }
-
     public AccountMng(int valid) {
-        myAcc = myAccount(); // to get the whole object of the BankAccount class of the one that just logged in
+        myAcc = BankAccount.getAccount(ID); // to get the whole object of the BankAccount class of the one that just logged in
         me = me(myAcc);
 
         f = new JFrame("Accounts");
@@ -137,11 +117,7 @@ public class AccountMng implements ActionListener {
         f.add(bDone);
 
 
-        f.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-            }
-
+        f.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (flag == -1) {
@@ -153,32 +129,6 @@ public class AccountMng implements ActionListener {
                 }
                 Bank.bankFrame.setVisible(true);
                 f.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
             }
         });
 
@@ -187,12 +137,14 @@ public class AccountMng implements ActionListener {
         f.setLocation(370, 100);
         f.setVisible(true);
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (BankAccount.accountArrayFile != null && ae.getSource() == bAdd) {
             flag = -1; //to inform that changes happened and to be checked before closing this window
+
 
             BankAccount newRow;
             if (Objects.equals(tId.getText(), "")) {
@@ -203,9 +155,16 @@ public class AccountMng implements ActionListener {
                 tNum.setText("---");
             if (tType.getText().length() == 0)
                 tType.setText("---");
-            newRow = new BankAccount(tId.getText(), tNum.getText(), null, tCust.getText(), tType.getText());
-            BankAccount.accountArrayFile.add(newRow);
-            JOptionPane.showMessageDialog(null, "This account has been added successfully");
+            newRow = new BankAccount(tId.getText(), tNum.getText(), LocalDate.now(), tType.getText());
+
+            if (!Objects.equals(CustomerDisplay.custID, null)) {
+                newRow.setCustID(CustomerDisplay.custID);
+                BankAccount.accountArrayFile.add(newRow);
+                JOptionPane.showMessageDialog(null, "This account has been added successfully");
+                return;
+            }
+
+            JOptionPane.showMessageDialog(null, "Cannot add, customer ID is null");
 
         } else if (ae.getSource() == bDisplay) {
             BankAccount.arrayFileDisplay();
@@ -213,7 +172,8 @@ public class AccountMng implements ActionListener {
         } else if (ae.getSource() == bRemove) {
             //if (account instanceof BankAccount) { //to be improved so that we have an unknown object and here we check if it is the admin to delete a specific account
             flag = -1;
-            System.out.println("This one is approved to remove");
+            flagRem = 1; // this to update the customer file as well
+
             String message = "Enter the id of the account to be removed";
             removeId = new JTextField();
             int result = JOptionPane.showOptionDialog(null, new Object[]{message, removeId}, //to know if the user has cancelled the removal operation
@@ -224,24 +184,31 @@ public class AccountMng implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Enter the account's id to be removed");
                     return;
                 }
-                int isMan = 0;
+                boolean isExist = false;
                 for (BankAccount account : BankAccount.accountArrayFile) {
-                    if (Objects.equals(account.getAcctId(), removeId.getText())) {
-                        isMan = 1;
+                    if (Objects.equals(account.getAcctID(), removeId.getText())) {
+                        isExist = true;
                     }
-                    if (isMan == 1) {
+                    if (isExist) {
+                        BankCustomer removeCust = BankCustomer.getCustomer(account.getCustID());
                         if ((Objects.equals(me.getPost(), "Manager"))) {
-                            if ((me(account) != null) && (!Objects.equals(me(account).getPost(), "Manager"))) {
+                            if (removeCust == null) {
+                                JOptionPane.showMessageDialog(null, "Cannot remove, there is no customer for this account");
+                                return;
+                            }
+                            if (!Objects.equals(Objects.requireNonNull(me(account)).getPost(), "Manager")) {
                                 //System.out.println(account.getAcctName()+"  with index "+accountArrayFile.indexOf(account));
                                 BankAccount.accountArrayFile.remove(account);
+                                BankCustomer.getCustArrayFile().remove(removeCust);
                                 JOptionPane.showMessageDialog(null, "This account has been removed successfully");
                                 return;
                             }
                             JOptionPane.showMessageDialog(null, "This account cannot be removed");
                             return;
                         }
-                        if (BankCustomer.isValidCust(account.getCustId())) {
+                        if (BankCustomer.isValidCust(account.getCustID())) { //thus the account to be deleted is not an admin
                             BankAccount.accountArrayFile.remove(account);
+                            BankCustomer.getCustArrayFile().remove(removeCust);
                             JOptionPane.showMessageDialog(null, "This account has been removed successfully");
                             return;
                         }
@@ -259,7 +226,6 @@ public class AccountMng implements ActionListener {
 
         } else if (ae.getSource() == bEdit) {
             flag = -1;
-
             String message = "Enter the id of the account to be edited";
             editId = new JTextField();
             int result = JOptionPane.showOptionDialog(null, new Object[]{message, editId}, //to know if the user has cancelled the removal operation
@@ -270,10 +236,10 @@ public class AccountMng implements ActionListener {
             //NEED to be updated so that we get to the final account without showing dialog repeatedly until condition is found
             if (myAcc != null && result == 0 && !Objects.equals(editId.getText(), "")) {
                 for (BankAccount account : BankAccount.accountArrayFile) {
-                    if ((Objects.equals(account.getAcctId(), editId.getText()))) {
+                    if ((Objects.equals(account.getAcctID(), editId.getText()))) {
                         if ((!Objects.equals(me.getPost(), "Manager"))) {
-                            if ((me(account) != null) && (Objects.equals(me(account).getPost(), "Manager"))
-                                    || (!BankCustomer.isValidCust(account.getCustId()))) {
+                            if (Objects.equals(Objects.requireNonNull(me(account)).getPost(), "Manager")
+                                    || (!BankCustomer.isValidCust(account.getCustID()))) {
                                 JOptionPane.showMessageDialog(null, "You are not authorized");
                                 return;
                             }
@@ -286,40 +252,24 @@ public class AccountMng implements ActionListener {
                 JOptionPane.showMessageDialog(null, "This account does not exist");
             }
         } else if (ae.getSource() == bDone) {//upload the changes in the real file
-            try {
-                accountCSVWriter = new BufferedWriter(new FileWriter("src/BankManagement/accounts.csv"));
-                accountCSVWriter.write("ID");
-                accountCSVWriter.append(',');
-                accountCSVWriter.write("Number");
-                accountCSVWriter.append(',');
-                accountCSVWriter.write("Type");
-                accountCSVWriter.append(',');
-                accountCSVWriter.write("Customer ID");
-                accountCSVWriter.append(',');
-                accountCSVWriter.write("Balance");
-                for (BankAccount account : BankAccount.accountArrayFile) {
-                    accountCSVWriter.append('\n');
-                    accountCSVWriter.append(account.getAcctId());
-                    accountCSVWriter.append(',');
-                    accountCSVWriter.append(account.getAcctNo());
-                    accountCSVWriter.append(',');
-                    accountCSVWriter.write(account.getAcctType());
-                    accountCSVWriter.append(',');
-                    accountCSVWriter.write(account.getCustId());
-                    accountCSVWriter.append(',');
-                    accountCSVWriter.write(account.getBalance() + "");
-                }
-                JOptionPane.showMessageDialog(null, "The Excel file has been updated successfully");
-                accountCSVWriter.flush();
-                accountCSVWriter.close();
-
-                flag = 1; //meaning you can safely close
-            } catch (Exception ex) {
-                System.out.println("There is error in writing in file: " + ex);
+            BankAccount.writeToFile();
+            if (flagRem == 1) {
+                BankCustomer.writeToFile();
             }
+            JOptionPane.showMessageDialog(null, "Accounts excel file has been updated successfully");
+            flag = 1; //meaning you can safely close
         } else {
             System.out.println("Invalid button");
         }
+    }
+
+    private BankCustomer me(BankAccount acc) {
+        for (BankCustomer admin : BankCustomer.getAdminArrayFile()) {
+            if (Objects.equals(admin.getCustID(), acc.getCustID())) {
+                return admin;
+            }
+        }
+        return null;
     }
 
 }
