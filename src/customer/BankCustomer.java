@@ -1,4 +1,4 @@
-package CUSTOMER;
+package Customer;
 
 import BankManagement.BankAccount;
 
@@ -35,8 +35,9 @@ public class BankCustomer {
     }
 
     private ArrayList<String> operations = new ArrayList<String>();
-     static ArrayList<BankCustomer> customerArrayFile;
+    static ArrayList<BankCustomer> customerArrayFile;
     public static ArrayList<BankCustomer> adminArrayFile;
+
     //Constructor for adding customer
     public BankCustomer() {
         int numRow = -1;
@@ -44,7 +45,7 @@ public class BankCustomer {
         int flag = 0;
         int colCount = 0;
         try {
-            customerCSVReader = new BufferedReader(new FileReader("src/CUSTOMER/customers.csv"));
+            customerCSVReader = new BufferedReader(new FileReader("src/Customer/Customers.csv"));
             while ((row = customerCSVReader.readLine()) != null) {
                 if (flag == 0) {
                     colCount = row.split(",").length;
@@ -52,8 +53,12 @@ public class BankCustomer {
                 }
                 numRow++;
             }
+            if (numRow != -1)
+                customerArrayFile = new ArrayList<>(numRow);
+            else{
+                System.out.println("File is empty");
 
-            customerArrayFile = new ArrayList<>(numRow);
+            }
         } catch (Exception ex) {
             System.out.println("There is error in reading for the array size: " + ex);
         }
@@ -62,32 +67,30 @@ public class BankCustomer {
         flag = 0;
 
         try {
-            customerCSVReader = new BufferedReader(new FileReader("src/CUSTOMER/customers.csv"));
+            customerCSVReader = new BufferedReader(new FileReader("src/Customer/Customers.csv"));
             while ((row = customerCSVReader.readLine()) != null) {
                 if (flag == 0) {
                     flag = 1;
                     continue;
                 }
                 customerInfo = row.split(",");
-                for (int i=0;i<customerInfo.length;i++){
-                    if(customerInfo[i]==null){
-                        customerInfo[i]="---";
+                for (int i = 0; i < customerInfo.length; i++) {
+                    if (customerInfo[i] == null) {
+                        customerInfo[i] = "---";
                     }
                 }
                 BankCustomer newCustomer;
-                if (customerInfo.length == colCount) {
-                    newCustomer = new BankCustomer(customerInfo[0], customerInfo[1], customerInfo[2], customerInfo[3], customerInfo[4], customerInfo[5]);
-                    customerArrayFile.add(newCustomer);
-                }
 
-                }
+                newCustomer = new BankCustomer(customerInfo[0], customerInfo[1], customerInfo[2], customerInfo[3], customerInfo[4], customerInfo[5]);
+                customerArrayFile.add(newCustomer);
+            }
             customerCSVReader.close();
         } catch (Exception ex) {
             System.out.println("There is error in reading in the array: " + ex);
         }
 
 
-         numRow = -1;
+        numRow = -1;
         row = "";
         flag = 0;
         colCount = 0;
@@ -131,7 +134,7 @@ public class BankCustomer {
     }
 
     //this constructor for admins
-    public BankCustomer(String adminID, String firstName, String lastName, String post, String accountID ,String city, String mobile) {
+    public BankCustomer(String adminID, String firstName, String lastName, String post, String accountID, String city, String mobile) {
         custId = adminID;
         custFirstName = firstName;
         custLastName = lastName;
@@ -158,7 +161,7 @@ public class BankCustomer {
         }
         return false;
 
-        }
+    }
 
     // ---------- Getters ------------
     public String getCustId() {

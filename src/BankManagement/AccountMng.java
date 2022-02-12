@@ -1,6 +1,6 @@
 package BankManagement;
 
-import CUSTOMER.BankCustomer;
+import Customer.BankCustomer;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package CUSTOMER;
+package Customer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -138,27 +138,30 @@ public class CustomerDisplay implements ActionListener {
             if (tMobile.getText().length() == 0)
                 tMobile.setText("---");
 
-            newRow = new BankCustomer(tId.getText(), tFirstName.getText(), tLastName.getText(), tCity.getText(), null, tStreet.getText(), tMobile.getText());
+            newRow = new BankCustomer(tId.getText(), tFirstName.getText(), tLastName.getText(), tCity.getText(), tStreet.getText(), tMobile.getText());
             BankCustomer.customerArrayFile.add(newRow);
             JOptionPane.showMessageDialog(null, "This customer has been added successfully");
         } else if (ae.getSource() == bDone) {
 
             try {
-                customerCSVWriter = new BufferedWriter(new FileWriter("src/CUSTOMER/customers.csv"));
+                customerCSVWriter = new BufferedWriter(new FileWriter("src/Customer/Customers.csv"));
 
-                customerCSVWriter.write("Customer id");
+                customerCSVWriter.write("ID");
                 customerCSVWriter.append(','); //to add new column
-                customerCSVWriter.write("customer FirstName");
+                customerCSVWriter.write("First Name");
                 customerCSVWriter.append(',');
-                customerCSVWriter.write("customer LastName");
+                customerCSVWriter.write("Last Name");
                 customerCSVWriter.append(',');
-                customerCSVWriter.write("customer City");
+                customerCSVWriter.write("City");
                 customerCSVWriter.append(',');
-                customerCSVWriter.write("customer Street");
+                customerCSVWriter.write("Street");
                 customerCSVWriter.append(',');
-                customerCSVWriter.write("customer Mobile");
+                customerCSVWriter.write("Mobile");
+                if(BankCustomer.customerArrayFile == null)
+                    return;
                 for (BankCustomer customer : BankCustomer.customerArrayFile) {
                     customerCSVWriter.append('\n'); //to add new row
+                    System.out.println("writing in file " + customer);
                     customerCSVWriter.write(customer.getCustId());
                     customerCSVWriter.append(',');
                     customerCSVWriter.write(customer.getCustFirstName());
@@ -177,6 +180,7 @@ public class CustomerDisplay implements ActionListener {
                 customerCSVWriter.close();
                 flag = -1;
             } catch (Exception ex) {
+                ex.printStackTrace();
                 System.out.println("There is error in writing: " + ex);
             }
         } else if (ae.getSource() == bCancel) {
@@ -186,6 +190,7 @@ public class CustomerDisplay implements ActionListener {
 
 
     public static void main (String[]args ){
+        new BankCustomer();
             new CustomerDisplay();
         }
 }
