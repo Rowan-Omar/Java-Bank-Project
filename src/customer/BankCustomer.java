@@ -25,7 +25,7 @@ public class BankCustomer {
 
 
     private BufferedReader customerCSVReader, adminCSVReader;
-    private static BufferedWriter customerCSVWriter;
+    private static BufferedWriter customerCSVWriter, adminCSVWriter;
 
 
     private static ArrayList<BankCustomer> customerArrayFile;
@@ -132,6 +132,7 @@ public class BankCustomer {
         this.firstName = firstName;
         this.lastName = lastName;
         this.post = post;
+        System.out.println("The post is: " + this.post);
         acctID = accountID;
         this.city = city;
         this.mobile = mobile;
@@ -147,7 +148,7 @@ public class BankCustomer {
         mobile = Mobile;
     }
 
-    public static void writeToFile() {
+    public static void writeToCustFile() {
         try {
             customerCSVWriter = new BufferedWriter(new FileWriter("src/Customer/Customers.csv"));
 
@@ -182,8 +183,54 @@ public class BankCustomer {
             customerCSVWriter.flush();
             customerCSVWriter.close();
         } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("There is error in writing: " + ex);
+            System.out.println("There is error in writing in customer file: " + ex);
+        }
+    }
+
+    public static void writeToAdminFile() {
+        try {
+            adminCSVWriter = new BufferedWriter(new FileWriter("src/BankManagement/Admins.csv"));
+
+            adminCSVWriter.write("ID");
+            adminCSVWriter.append(','); //to add new column
+            adminCSVWriter.write("First Name");
+            adminCSVWriter.append(',');
+            adminCSVWriter.write("Last Name");
+            adminCSVWriter.append(',');
+            adminCSVWriter.write("Post");
+            adminCSVWriter.append(',');
+            adminCSVWriter.write("Account ID");
+            adminCSVWriter.append(',');
+            adminCSVWriter.write("City");
+            adminCSVWriter.append(',');
+            adminCSVWriter.write("Street");
+            adminCSVWriter.append(',');
+            adminCSVWriter.write("Phone Number");
+            if (BankCustomer.getAdminArrayFile() == null)
+                return;
+            for (BankCustomer admin : BankCustomer.getAdminArrayFile()) {
+                adminCSVWriter.append('\n'); //to add new row
+                System.out.println("writing in file " + admin);
+                adminCSVWriter.write(admin.getCustID());
+                adminCSVWriter.append(',');
+                adminCSVWriter.write(admin.getFirstName());
+                adminCSVWriter.append(',');
+                adminCSVWriter.write(admin.getLastName());
+                adminCSVWriter.append(',');
+                adminCSVWriter.write(admin.getPost());
+                adminCSVWriter.append(',');
+                adminCSVWriter.write(admin.getAcctID());
+                adminCSVWriter.append(',');
+                adminCSVWriter.write(admin.getCity());
+                adminCSVWriter.append(',');
+                adminCSVWriter.write(admin.getStreet());
+                adminCSVWriter.append(',');
+                adminCSVWriter.write(admin.getMobile());
+            }
+            adminCSVWriter.flush();
+            adminCSVWriter.close();
+        } catch (Exception ex) {
+            System.out.println("There is error in writing in admin file: " + ex);
         }
     }
 
@@ -204,7 +251,12 @@ public class BankCustomer {
         return false;
     }
 
+    //Need to be considered this and method "me" in accountMng
     public static BankCustomer getCustomer(String id) {
+        for (BankCustomer admin : adminArrayFile) {
+            if (Objects.equals(id, admin.getCustID()))
+                return admin;
+        }
         for (BankCustomer bankcustomer : customerArrayFile) {
             if (Objects.equals(id, bankcustomer.getCustID()))
                 return bankcustomer;

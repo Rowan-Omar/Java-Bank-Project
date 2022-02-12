@@ -1,5 +1,8 @@
 package Customer;
 
+import BankManagement.AccountMng;
+import BankManagement.BankAccount;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,13 +14,15 @@ public class CustomerDisplay implements ActionListener {
     JTextField tId, tFirstName, tLastName, tStreet, tCity, tMobile;
     JButton bAdd, bCancel, bDone;
 
-    public static String custID, password;
+    public static String custID, password, accountID;
     int flag = 0;
 
-    public CustomerDisplay() {
+    public CustomerDisplay(String accID) {
         f = new JFrame("customer");
         f.setBackground(Color.red);
         f.setLayout(null);
+
+        accountID = accID;
 
         JLabel lId = new JLabel("customer ID");
         lId.setBounds(50, 50, 100, 30);
@@ -134,19 +139,24 @@ public class CustomerDisplay implements ActionListener {
             newRow = new BankCustomer(tId.getText(), tFirstName.getText(), tLastName.getText(), tCity.getText(), tStreet.getText(), tMobile.getText());
             BankCustomer.getCustArrayFile().add(newRow);
             custID = tId.getText();
+            BankAccount acc = BankAccount.getAccount(accountID);
+
+            if (acc != null)
+                acc.setCustID(tId.getText());
             JOptionPane.showMessageDialog(null, "This customer has been added successfully");
         } else if (ae.getSource() == bDone) {
-            BankCustomer.writeToFile();
+            BankCustomer.writeToCustFile();
             JOptionPane.showMessageDialog(null, "Customer excel file has been update successfully");
             flag = 1;
         } else if (ae.getSource() == bCancel) {
+
             f.setVisible(false);
         }
     }
 
     public static void main(String[] args) {
-        new BankCustomer();
-        new CustomerDisplay();
+        /*new BankCustomer();
+        new CustomerDisplay();*/
     }
 }
 

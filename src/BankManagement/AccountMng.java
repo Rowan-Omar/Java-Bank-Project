@@ -36,7 +36,9 @@ public class AccountMng implements ActionListener {
     }
 
     public AccountMng(int valid) {
+        new BankCustomer();
         myAcc = BankAccount.getAccount(ID); // to get the whole object of the BankAccount class of the one that just logged in
+        System.out.println(myAcc.getAcctNo());
         me = me(myAcc);
 
         f = new JFrame("Accounts");
@@ -145,7 +147,6 @@ public class AccountMng implements ActionListener {
         if (BankAccount.accountArrayFile != null && ae.getSource() == bAdd) {
             flag = -1; //to inform that changes happened and to be checked before closing this window
 
-
             BankAccount newRow;
             if (Objects.equals(tId.getText(), "")) {
                 JOptionPane.showMessageDialog(null, "Sorry, the Account ID field must not be empty");
@@ -156,15 +157,54 @@ public class AccountMng implements ActionListener {
             if (tType.getText().length() == 0)
                 tType.setText("---");
             newRow = new BankAccount(tId.getText(), tNum.getText(), LocalDate.now(), tType.getText());
+            new CustomerDisplay(tId.getText());
+            /*new Thread()
+            {
+                @Override
+                public void run()
+                {
+                    try {
+                        new CustomerDisplay();
+                        this.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();*/
+            /*synchronized( this )
+            {
+                while(  CustomerDisplay.f.isVisible() )
+                {
+                    try {
+                        this.wait();
 
-            if (!Objects.equals(CustomerDisplay.custID, null)) {
-                newRow.setCustID(CustomerDisplay.custID);
-                BankAccount.accountArrayFile.add(newRow);
-                JOptionPane.showMessageDialog(null, "This account has been added successfully");
-                return;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                //take the action here;
+
+            }
+            synchronized(this)
+            {
+                //establish_the_condition;
+                System.out.println("Return key pressed");
+                this.notify();
+
+                //any additional code if needed
+
+            }*/
+
+      /*      if (!Objects.equals(CustomerDisplay.custID, null)) {
+                newRow.setCustID(CustomerDisplay.custID);*/
+            BankAccount.accountArrayFile.add(newRow);
+            JOptionPane.showMessageDialog(null, "This account has been added successfully");
+/*                return;
             }
 
-            JOptionPane.showMessageDialog(null, "Cannot add, customer ID is null");
+            JOptionPane.showMessageDialog(null, "Cannot add, customer ID is null");*/
+
 
         } else if (ae.getSource() == bDisplay) {
             BankAccount.arrayFileDisplay();
@@ -238,7 +278,7 @@ public class AccountMng implements ActionListener {
                 for (BankAccount account : BankAccount.accountArrayFile) {
                     if ((Objects.equals(account.getAcctID(), editId.getText()))) {
                         if ((!Objects.equals(me.getPost(), "Manager"))) {
-                            if (Objects.equals(Objects.requireNonNull(me(account)).getPost(), "Manager")
+                            if ((me(account) != null && Objects.equals(me(account).getPost(), "Manager"))
                                     || (!BankCustomer.isValidCust(account.getCustID()))) {
                                 JOptionPane.showMessageDialog(null, "You are not authorized");
                                 return;
@@ -254,7 +294,7 @@ public class AccountMng implements ActionListener {
         } else if (ae.getSource() == bDone) {//upload the changes in the real file
             BankAccount.writeToFile();
             if (flagRem == 1) {
-                BankCustomer.writeToFile();
+                BankCustomer.writeToCustFile();
             }
             JOptionPane.showMessageDialog(null, "Accounts excel file has been updated successfully");
             flag = 1; //meaning you can safely close
@@ -263,7 +303,16 @@ public class AccountMng implements ActionListener {
         }
     }
 
+    public boolean done() {
+        return true;
+    }
+
     private BankCustomer me(BankAccount acc) {
+        for (BankCustomer customer : BankCustomer.getCustArrayFile()) {
+            if (Objects.equals(customer.getCustID(), acc.getCustID())) {
+                return customer;
+            }
+        }
         for (BankCustomer admin : BankCustomer.getAdminArrayFile()) {
             if (Objects.equals(admin.getCustID(), acc.getCustID())) {
                 return admin;
@@ -350,5 +399,7 @@ class EditFrame {
    /* public static void main(String[] args) {
         new EditFrame();
     }*/
+
+
 }
 
