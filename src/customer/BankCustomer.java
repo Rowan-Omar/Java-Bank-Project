@@ -74,7 +74,7 @@ public class BankCustomer {
                 }
                 BankCustomer newCustomer;
 
-                newCustomer = new BankCustomer(customerInfo[0], customerInfo[1], customerInfo[2], customerInfo[3], customerInfo[4], customerInfo[5]);
+                newCustomer = new BankCustomer(customerInfo[0], customerInfo[1], customerInfo[2], customerInfo[3], customerInfo[4], customerInfo[5], customerInfo[6]);
                 customerArrayFile.add(newCustomer);
             }
             customerCSVReader.close();
@@ -115,7 +115,7 @@ public class BankCustomer {
 
                 BankCustomer newCustomer;
                 if (adminInfo.length == colCount) {
-                    newCustomer = new BankCustomer(adminInfo[0], adminInfo[1], adminInfo[2], adminInfo[3], adminInfo[4], adminInfo[5], adminInfo[6]);
+                    newCustomer = new BankCustomer(adminInfo[0], adminInfo[1], adminInfo[2], adminInfo[3], adminInfo[4], adminInfo[5]);
                     adminArrayFile.add(newCustomer);
                 }
 
@@ -127,7 +127,7 @@ public class BankCustomer {
     }
 
     //this constructor for admins
-    public BankCustomer(String adminID, String firstName, String lastName, String post, String accountID, String city, String mobile) {
+    public BankCustomer(String adminID, String firstName, String lastName, String post, String accountID, String mobile) {
         custID = adminID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -138,11 +138,12 @@ public class BankCustomer {
         this.mobile = mobile;
     }
 
-
-    public BankCustomer(String Id, String FirstName, String LastName, String City, String Street, String Mobile) {
+    //this constructor for customers
+    public BankCustomer(String Id, String FirstName, String LastName, String accountID, String City, String Street, String Mobile) {
         custID = Id;
         firstName = FirstName;
         lastName = LastName;
+        acctID = accountID;
         city = City;
         street = Street;
         mobile = Mobile;
@@ -157,6 +158,8 @@ public class BankCustomer {
             customerCSVWriter.write("First Name");
             customerCSVWriter.append(',');
             customerCSVWriter.write("Last Name");
+            customerCSVWriter.append(',');
+            customerCSVWriter.write("Account ID");
             customerCSVWriter.append(',');
             customerCSVWriter.write("City");
             customerCSVWriter.append(',');
@@ -173,6 +176,8 @@ public class BankCustomer {
                 customerCSVWriter.write(customer.getFirstName());
                 customerCSVWriter.append(',');
                 customerCSVWriter.write(customer.getLastName());
+                customerCSVWriter.append(',');
+                customerCSVWriter.write(customer.getAcctID());
                 customerCSVWriter.append(',');
                 customerCSVWriter.write(customer.getCity());
                 customerCSVWriter.append(',');
@@ -201,10 +206,6 @@ public class BankCustomer {
             adminCSVWriter.append(',');
             adminCSVWriter.write("Account ID");
             adminCSVWriter.append(',');
-            adminCSVWriter.write("City");
-            adminCSVWriter.append(',');
-            adminCSVWriter.write("Street");
-            adminCSVWriter.append(',');
             adminCSVWriter.write("Phone Number");
             if (BankCustomer.getAdminArrayFile() == null)
                 return;
@@ -220,10 +221,6 @@ public class BankCustomer {
                 adminCSVWriter.write(admin.getPost());
                 adminCSVWriter.append(',');
                 adminCSVWriter.write(admin.getAcctID());
-                adminCSVWriter.append(',');
-                adminCSVWriter.write(admin.getCity());
-                adminCSVWriter.append(',');
-                adminCSVWriter.write(admin.getStreet());
                 adminCSVWriter.append(',');
                 adminCSVWriter.write(admin.getMobile());
             }
@@ -251,12 +248,8 @@ public class BankCustomer {
         return false;
     }
 
-    //Need to be considered this and method "me" in accountMng
+    //This method only deals with customers not consider admins
     public static BankCustomer getCustomer(String id) {
-        for (BankCustomer admin : adminArrayFile) {
-            if (Objects.equals(id, admin.getCustID()))
-                return admin;
-        }
         for (BankCustomer bankcustomer : customerArrayFile) {
             if (Objects.equals(id, bankcustomer.getCustID()))
                 return bankcustomer;

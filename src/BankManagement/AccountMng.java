@@ -31,6 +31,7 @@ public class AccountMng implements ActionListener {
 
     private int flag = 0, flagRem = 0; //var 'flag' to check whether the admin has uploaded the final updates before closing or not
     // -1 -> changes happened // 0 -> no changes happened // 1 -> changes have been uploaded
+    private boolean isAdmin = false;
 
     public AccountMng() {
     }
@@ -38,9 +39,9 @@ public class AccountMng implements ActionListener {
     public AccountMng(int valid) {
         new BankCustomer();
         myAcc = BankAccount.getAccount(ID); // to get the whole object of the BankAccount class of the one that just logged in
-        System.out.println(myAcc.getAcctNo());
         me = me(myAcc);
 
+        System.out.println("The one entered is with custID " + me.getCustID() + " " + me.getAcctID());
         f = new JFrame("Accounts");
 
         JLabel lId = new JLabel("Account ID");
@@ -144,7 +145,7 @@ public class AccountMng implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (BankAccount.accountArrayFile != null && ae.getSource() == bAdd) {
+        if (BankAccount.getAccArrayFile() != null && ae.getSource() == bAdd) {
             flag = -1; //to inform that changes happened and to be checked before closing this window
 
             BankAccount newRow;
@@ -198,7 +199,7 @@ public class AccountMng implements ActionListener {
 
       /*      if (!Objects.equals(CustomerDisplay.custID, null)) {
                 newRow.setCustID(CustomerDisplay.custID);*/
-            BankAccount.accountArrayFile.add(newRow);
+            BankAccount.getAccArrayFile().add(newRow);
             JOptionPane.showMessageDialog(null, "This account has been added successfully");
 /*                return;
             }
@@ -219,35 +220,44 @@ public class AccountMng implements ActionListener {
             int result = JOptionPane.showOptionDialog(null, new Object[]{message, removeId}, //to know if the user has cancelled the removal operation
                     "Remove", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
-            if (BankAccount.accountArrayFile != null && result == 0) {
+            if (BankAccount.getAccArrayFile() != null && result == 0) {
                 if (Objects.equals(removeId.getText(), "")) { //need to be updated so that the remove dialog do not disappear, or we can remove this if condition with no work to be done
                     JOptionPane.showMessageDialog(null, "Enter the account's id to be removed");
                     return;
                 }
                 boolean isExist = false;
-                for (BankAccount account : BankAccount.accountArrayFile) {
+                for (BankAccount account : BankAccount.getAccArrayFile()) {
                     if (Objects.equals(account.getAcctID(), removeId.getText())) {
                         isExist = true;
                     }
                     if (isExist) {
                         BankCustomer removeCust = BankCustomer.getCustomer(account.getCustID());
+                        if (removeCust == me) {
+                            JOptionPane.showMessageDialog(null, "Cannot remove your self");
+                            return;
+                        }
                         if ((Objects.equals(me.getPost(), "Manager"))) {
                             if (removeCust == null) {
                                 JOptionPane.showMessageDialog(null, "Cannot remove, there is no customer for this account");
                                 return;
                             }
-                            if (!Objects.equals(Objects.requireNonNull(me(account)).getPost(), "Manager")) {
-                                //System.out.println(account.getAcctName()+"  with index "+accountArrayFile.indexOf(account));
-                                BankAccount.accountArrayFile.remove(account);
-                                BankCustomer.getCustArrayFile().remove(removeCust);
+                            if ((me(account) != null && (!Objects.equals(me(account).getPost(), "Manager")))) {
+                                //System.out.println(account.getAcctName()+"  with index "+getAccArrayFile().indexOf(account));
+                                BankAccount.getAccArrayFile().remove(account);
+                                if (BankCustomer.isValidCust(account.getCustID()))
+                                    BankCustomer.getCustArrayFile().remove(removeCust);
+                                else {
+                                    isAdmin = true;
+                                    BankCustomer.getAdminArrayFile().remove(removeCust);
+                                }
                                 JOptionPane.showMessageDialog(null, "This account has been removed successfully");
                                 return;
                             }
                             JOptionPane.showMessageDialog(null, "This account cannot be removed");
                             return;
-                        }
+                        }//thus i am not the manager (normal admin)
                         if (BankCustomer.isValidCust(account.getCustID())) { //thus the account to be deleted is not an admin
-                            BankAccount.accountArrayFile.remove(account);
+                            BankAccount.getAccArrayFile().remove(account);
                             BankCustomer.getCustArrayFile().remove(removeCust);
                             JOptionPane.showMessageDialog(null, "This account has been removed successfully");
                             return;
@@ -275,7 +285,7 @@ public class AccountMng implements ActionListener {
 
             //NEED to be updated so that we get to the final account without showing dialog repeatedly until condition is found
             if (myAcc != null && result == 0 && !Objects.equals(editId.getText(), "")) {
-                for (BankAccount account : BankAccount.accountArrayFile) {
+                for (BankAccount account : BankAccount.getAccArrayFile()) {
                     if ((Objects.equals(account.getAcctID(), editId.getText()))) {
                         if ((!Objects.equals(me.getPost(), "Manager"))) {
                             if ((me(account) != null && Objects.equals(me(account).getPost(), "Manager"))
@@ -293,9 +303,11 @@ public class AccountMng implements ActionListener {
             }
         } else if (ae.getSource() == bDone) {//upload the changes in the real file
             BankAccount.writeToFile();
-            if (flagRem == 1) {
+            if (flagRem == 1)
                 BankCustomer.writeToCustFile();
-            }
+
+            if (isAdmin)
+                BankCustomer.writeToAdminFile();
             JOptionPane.showMessageDialog(null, "Accounts excel file has been updated successfully");
             flag = 1; //meaning you can safely close
         } else {
@@ -303,10 +315,7 @@ public class AccountMng implements ActionListener {
         }
     }
 
-    public boolean done() {
-        return true;
-    }
-
+    //this method deals with customers and admins
     private BankCustomer me(BankAccount acc) {
         for (BankCustomer customer : BankCustomer.getCustArrayFile()) {
             if (Objects.equals(customer.getCustID(), acc.getCustID())) {

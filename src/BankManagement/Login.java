@@ -51,14 +51,15 @@ public class Login {
                 }
                 System.out.println("Pass is: " + pass.length);
                 if (BankAccount.isValidAcc(id)) { // Thus, it is an existing account
-                    if (BankCustomer.isValidCust(id)) { //thus, you are a customer
+                    System.out.println(BankAccount.getAccount(id).getCustID());
+                    if (BankCustomer.isValidCust(BankAccount.getAccount(id).getCustID())) { //thus, you are a customer
                         if (BankCustomer.isValidPass(String.valueOf(pass))) {
                             new Transaction();
                             textID.setText("");
                             psw.setText("");
                             fLogin.setVisible(false);
                             System.out.println("You are a customer");
-                        }else{
+                        } else {
                             System.out.println("Wrong password");
                             JOptionPane.showMessageDialog(null, "This is an invalid account");
                         }

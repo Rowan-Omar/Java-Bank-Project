@@ -21,17 +21,10 @@ public class BankAccount {
     private double acctBalance;
     private String alternateAcctNo; //momken a7oto m3 el acct details
     private String acctCurrency;
-
     private String acctType; //whether it is saving account or checking account
-
-    public ArrayList<String> getOperations() {
-        return operations;
-    }
-
     private ArrayList<String> operations = new ArrayList<String>();
 
-    //Scanner input = new Scanner(System.in);
-    static ArrayList<BankAccount> accountArrayFile;
+    private static ArrayList<BankAccount> accountArrayFile;
 
     //Constructor for uploading the accounts from the file to the array
     public BankAccount() {
@@ -104,7 +97,7 @@ public class BankAccount {
         acctType = accountType;
     }
 
-    public static void writeToFile(){
+    public static void writeToFile() {
         try {
             BufferedWriter accountCSVWriter = new BufferedWriter(new FileWriter("src/BankManagement/accounts.csv"));
             accountCSVWriter.write("ID");
@@ -187,6 +180,14 @@ public class BankAccount {
             }
         }
         return null;
+    }
+
+    public ArrayList<String> getOperations() {
+        return operations;
+    }
+
+    public static ArrayList<BankAccount> getAccArrayFile() {
+        return accountArrayFile;
     }
 
     //-------setters------------

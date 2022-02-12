@@ -93,7 +93,7 @@ public class Transaction {
     }
 
     private BankAccount me() {
-        for (BankAccount account : BankAccount.accountArrayFile) {
+        for (BankAccount account : BankAccount.getAccArrayFile()) {
             if (Objects.equals(account.getAcctID(), ID)) {
                 return account;
             }
@@ -405,7 +405,7 @@ public class Transaction {
                     JOptionPane.showMessageDialog(null, "You do not have enough money  ");
                     return;
                 }
-                for (BankAccount account : BankAccount.accountArrayFile) {
+                for (BankAccount account : BankAccount.getAccArrayFile()) {
                     if (Objects.equals(account.getAcctNo(), toNumber)) {
                         account.setBalance(account.getBalance() + textAmt);
                         myAcc.setBalance(myAcc.getBalance() - textAmt);

@@ -136,12 +136,12 @@ public class CustomerDisplay implements ActionListener {
             if (tMobile.getText().length() == 0)
                 tMobile.setText("---");
 
-            newRow = new BankCustomer(tId.getText(), tFirstName.getText(), tLastName.getText(), tCity.getText(), tStreet.getText(), tMobile.getText());
+            newRow = new BankCustomer(tId.getText(), tFirstName.getText(), tLastName.getText(), accountID, tCity.getText(), tStreet.getText(), tMobile.getText());
             BankCustomer.getCustArrayFile().add(newRow);
             custID = tId.getText();
             BankAccount acc = BankAccount.getAccount(accountID);
 
-            if (acc != null)
+            if (acc != null) //updating the customer id in the BankAccount class
                 acc.setCustID(tId.getText());
             JOptionPane.showMessageDialog(null, "This customer has been added successfully");
         } else if (ae.getSource() == bDone) {
